@@ -602,7 +602,7 @@ Transform:
   m_GameObject: {fileID: 672960757}
   serializedVersion: 2
   m_LocalRotation: {x: 0.0035547195, y: -0, z: -0, w: 0.9999937}
-  m_LocalPosition: {x: -3.98, y: 0, z: 0}
+  m_LocalPosition: {x: -1.68, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -623,7 +623,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   GroundCheck: {fileID: 0}
+  animator: {fileID: 171904176}
+  bulletPrefab: {fileID: 0}
   speed: 5
+  bulletSpeed: 5
 --- !u!50 &672960763
 Rigidbody2D:
   serializedVersion: 5

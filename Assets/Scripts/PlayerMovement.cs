@@ -1,6 +1,7 @@
 using UnityEditor.Animations;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Windows;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -8,59 +9,73 @@ public class PlayerMovement : MonoBehaviour
     public GameObject GroundCheck;
     private Rigidbody2D rb;
     private SpriteRenderer sr;
-    private Animator animator;
+    public Animator animator;
+    private PlayerInput input;
+    [SerializeField] private GameObject bulletPrefab; // Cambiado de 'bullet'
 
     public float speed;
 
     private Vector2 direccion;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    private Vector2 directionMouse;
+
+    private bool shoot;
+    [SerializeField] float bulletSpeed = 5;
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         sr = GetComponent<SpriteRenderer>();
-        animator = GetComponent<Animator>();
-    }
-    void Start()
-    {
-        
+        animator = GetComponentInChildren<Animator>();
+        input = GetComponent<PlayerInput>();
     }
 
-    // Update is called once per frame
     void FixedUpdate()
     {
-        rb.linearVelocity = direccion * speed;
+        direccion = input.actions["Move"].ReadValue<Vector2>();
 
-        // Posición del mouse en el mundo
+        rb.linearVelocity = direccion * speed; // Cambiado de linearVelocity
+
         Vector3 mousePos = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
         mousePos.z = 0f;
 
-        // Dirección hacia el mouse
-        Vector2 direction = mousePos - transform.position;
+        directionMouse = mousePos - transform.position;
 
-        // Ángulo
-        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+        float angle = Mathf.Atan2(directionMouse.y, directionMouse.x) * Mathf.Rad2Deg;
 
-        // Rotación con Rigidbody2D
         rb.rotation = angle;
 
+        if (input.actions["Attack"].triggered) // Cambiado de ReadValue<bool>() para disparar solo una vez
+        {
+            Shoot();
+        }
     }
+
     void Update()
     {
         Animations();
+        Debug.DrawRay(transform.position, directionMouse.normalized * 10f, Color.green);
     }
 
-    public void OnMove (InputValue value)
+    void Shoot()
     {
-        direccion = value.Get<Vector2>();
-        print(direccion);
+        GameObject newBullet = Instantiate(bulletPrefab, transform.position, Quaternion.identity); // Cambiado
+
+        Rigidbody2D bulletRb = newBullet.GetComponent<Rigidbody2D>();
+        bulletRb.linearVelocity = directionMouse.normalized * bulletSpeed; // Cambiado de linearVelocity y normalizado
     }
 
     public void Animations()
     {
-        if (direccion.x != 0 || direccion.y != 0) animator.SetBool("isRunning", true);
-        else animator.SetBool("isRunning", false);
-
+        if (direccion.x != 0 || direccion.y != 0)
+        {
+            animator.SetBool("isRunning", true);
+            print("isRunning is true");
+        }
+        else
+        {
+            animator.SetBool("isRunning", false);
+            print("isRunning is false");
+        }
     }
 }
