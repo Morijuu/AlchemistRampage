@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Windows;
 
-public class PlayerMovement : MonoBehaviour
+public class PlayerScript : MonoBehaviour
 {
 
     public GameObject GroundCheck;
@@ -12,6 +12,7 @@ public class PlayerMovement : MonoBehaviour
     public Animator animator;
     private PlayerInput input;
     [SerializeField] private GameObject bulletPrefab; // Cambiado de 'bullet'
+    [SerializeField] private Transform bulletSpawn;
 
     public float speed;
 
@@ -45,37 +46,41 @@ public class PlayerMovement : MonoBehaviour
 
         rb.rotation = angle;
 
-        if (input.actions["Attack"].triggered) // Cambiado de ReadValue<bool>() para disparar solo una vez
-        {
-            Shoot();
-        }
+     
+        
     }
 
     void Update()
     {
         Animations();
         Debug.DrawRay(transform.position, directionMouse.normalized * 10f, Color.green);
+
+        if (input.actions["Attack"].triggered) // Cambiado de ReadValue<bool>() para disparar solo una vez
+        {
+            Shoot();
+        }
     }
 
     void Shoot()
     {
-        GameObject newBullet = Instantiate(bulletPrefab, transform.position, Quaternion.identity); // Cambiado
+        GameObject newBullet = Instantiate(bulletPrefab, bulletSpawn.position , Quaternion.identity); // Cambiado
 
         Rigidbody2D bulletRb = newBullet.GetComponent<Rigidbody2D>();
         bulletRb.linearVelocity = directionMouse.normalized * bulletSpeed; // Cambiado de linearVelocity y normalizado
-    }
 
+    }
+    
     public void Animations()
     {
         if (direccion.x != 0 || direccion.y != 0)
         {
             animator.SetBool("isRunning", true);
-            print("isRunning is true");
+            //print("isRunning is true");
         }
         else
         {
             animator.SetBool("isRunning", false);
-            print("isRunning is false");
+            //print("isRunning is false");
         }
     }
 }
