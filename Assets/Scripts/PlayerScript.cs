@@ -7,7 +7,7 @@ public class PlayerScript : MonoBehaviour
 {
 
     public GameObject GroundCheck;
-    private Rigidbody2D rb;
+    private Rigidbody rb; // CAMBIO: Rigidbody2D -> Rigidbody (3D)
     private SpriteRenderer sr;
     public Animator animator;
     private PlayerInput input;
@@ -16,16 +16,17 @@ public class PlayerScript : MonoBehaviour
 
     public float speed;
 
-    private Vector2 direccion;
+    private Vector2 direccion; // Se mantiene para input
+    private Vector3 direccion3D; // CAMBIO: nueva dirección en 3D (X,Z)
 
-    private Vector2 directionMouse;
+    private Vector3 directionMouse; // CAMBIO: ahora Vector3
 
     private bool shoot;
     [SerializeField] float bulletSpeed = 5;
 
     private void Awake()
     {
-        rb = GetComponent<Rigidbody2D>();
+        rb = GetComponent<Rigidbody>(); // CAMBIO
         sr = GetComponent<SpriteRenderer>();
         animator = GetComponentInChildren<Animator>();
         input = GetComponent<PlayerInput>();
@@ -35,25 +36,39 @@ public class PlayerScript : MonoBehaviour
     {
         direccion = input.actions["Move"].ReadValue<Vector2>();
 
-        rb.linearVelocity = direccion * speed; // Cambiado de linearVelocity
+        // CAMBIO: Convertimos el input 2D a movimiento en XZ (Y = 0)
+        direccion3D = new Vector3(direccion.x, 0f, direccion.y);
 
-        Vector3 mousePos = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
-        mousePos.z = 0f;
+        rb.linearVelocity = direccion3D * speed; // Sigue usando linearVelocity pero en 3D
 
-        directionMouse = mousePos - transform.position;
+        // CAMBIO: Raycast desde la cámara hacia un plano para obtener posición del mouse en 3D
+        Ray ray = Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
+        Plane plane = new Plane(Vector3.up, transform.position);
 
-        float angle = Mathf.Atan2(directionMouse.y, directionMouse.x) * Mathf.Rad2Deg;
+        float distance;
 
-        rb.rotation = angle;
+        if (plane.Raycast(ray, out distance))
+        {
+            Vector3 mousePos = ray.GetPoint(distance);
 
-     
-        
+            directionMouse = mousePos - transform.position;
+            directionMouse.y = 0f; // CAMBIO: ignoramos altura
+
+            // CAMBIO: rotación en 3D usando Quaternion
+            if (directionMouse != Vector3.zero)
+            {
+                Quaternion rot = Quaternion.LookRotation(directionMouse);
+                rb.MoveRotation(rot);
+            }
+        }
     }
 
     void Update()
     {
         Animations();
-        Debug.DrawRay(transform.position, directionMouse.normalized * 10f, Color.green);
+
+        // CAMBIO: ahora usamos forward en vez de vector 2D
+        Debug.DrawRay(transform.position, transform.forward * 10f, Color.green);
 
         if (input.actions["Attack"].triggered) // Cambiado de ReadValue<bool>() para disparar solo una vez
         {
@@ -63,13 +78,13 @@ public class PlayerScript : MonoBehaviour
 
     void Shoot()
     {
-        GameObject newBullet = Instantiate(bulletPrefab, bulletSpawn.position , Quaternion.identity); // Cambiado
+        GameObject newBullet = Instantiate(bulletPrefab, bulletSpawn.position, Quaternion.identity); // Cambiado
 
-        Rigidbody2D bulletRb = newBullet.GetComponent<Rigidbody2D>();
-        bulletRb.linearVelocity = directionMouse.normalized * bulletSpeed; // Cambiado de linearVelocity y normalizado
+        Rigidbody bulletRb = newBullet.GetComponent<Rigidbody>(); // CAMBIO: Rigidbody 3D
+        bulletRb.linearVelocity = transform.forward * bulletSpeed; // CAMBIO: dispara hacia adelante en 3D
 
     }
-    
+
     public void Animations()
     {
         if (direccion.x != 0 || direccion.y != 0)
