@@ -2,19 +2,24 @@ using UnityEngine;
 
 public class BulletScript : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
+    [SerializeField] private int damage = 20;
+    [SerializeField] private bool isEnemyBullet = false;
 
-    // Update is called once per frame
-    void Update()
+    private void OnTriggerEnter2D(Collider2D collision)
     {
-        
-    }
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
+        Health health = collision.GetComponent<Health>();
+
+        if (health != null)
+        {
+            // Bala del player → NO daña player
+            if (!isEnemyBullet && collision.CompareTag("Player")) return;
+
+            // Bala enemiga → NO daña enemigos
+            if (isEnemyBullet && collision.CompareTag("Enemy")) return;
+
+            health.TakeDamage(damage);
+        }
+
         Destroy(gameObject);
     }
 }
