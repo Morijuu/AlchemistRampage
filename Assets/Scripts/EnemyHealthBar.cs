@@ -10,6 +10,8 @@ public class EnemyHealthBar : MonoBehaviour
 
     void Update()
     {
+        if (health == null) return;
+
         float current = (float)health.currentHealth / health.maxHealth;
 
         fill.fillAmount = current;

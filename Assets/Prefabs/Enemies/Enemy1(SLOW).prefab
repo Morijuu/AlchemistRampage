@@ -270,6 +270,7 @@ GameObject:
   - component: {fileID: 8877270675673302408}
   - component: {fileID: 2112101925319782382}
   - component: {fileID: 6122064830134627605}
+  - component: {fileID: 4323081856659878864}
   m_Layer: 0
   m_Name: Enemy1(SLOW)
   m_TagString: Enemy
@@ -436,6 +437,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHealth: 65
   currentHealth: 0
+  bulletPickupPrefabs:
+  - {fileID: 5406239416059164170, guid: ca7b9d96ef91f1f49975922fb9772513, type: 3}
+  - {fileID: 6767887919996392655, guid: 6da0ac2857e518e4c856481bddb11c95, type: 3}
+  - {fileID: 4288882998555332803, guid: efe462408dede9c4d851d28351ea66cc, type: 3}
+  dropsPickup: 0
+  dropChance: 0.5
 --- !u!114 &2112101925319782382
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -464,6 +471,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 2
   detectionRange: 5
+--- !u!114 &4323081856659878864
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6202066739135564460}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 237d918718f7fe440834f062773c2b49, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  health: {fileID: 8877270675673302408}
+  fill: {fileID: 5790749517556524548}
+  healthText: {fileID: 3589905046462383871}
 --- !u!1 &8063309313205407459
 GameObject:
   m_ObjectHideFlags: 0
