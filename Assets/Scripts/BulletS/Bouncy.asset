@@ -15,11 +15,14 @@ MonoBehaviour:
   bulletType: 3
   displayName: Bouncy
   damage: 15
-  speed: 7
+  speed: 15
   fireRate: 3
   shotsPerPickup: 5
   splashRadius: 2
   splashDamage: 10
+  areaDuration: 4
+  areaTickRate: 0.5
+  areaEffectPrefab: {fileID: 0}
   fragCount: 6
   fragSpeed: 6
   fragDamage: 10

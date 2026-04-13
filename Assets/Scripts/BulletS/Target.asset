@@ -15,11 +15,14 @@ MonoBehaviour:
   bulletType: 6
   displayName: Target
   damage: 25
-  speed: 6
+  speed: 10
   fireRate: 3
   shotsPerPickup: 3
   splashRadius: 2
   splashDamage: 10
+  areaDuration: 4
+  areaTickRate: 0.5
+  areaEffectPrefab: {fileID: 0}
   fragCount: 6
   fragSpeed: 6
   fragDamage: 10

@@ -20,6 +20,9 @@ MonoBehaviour:
   shotsPerPickup: 3
   splashRadius: 2
   splashDamage: 10
+  areaDuration: 4
+  areaTickRate: 0.5
+  areaEffectPrefab: {fileID: 8491504801381993587, guid: 35a4479c650e2db408de3c60932e55bc, type: 3}
   fragCount: 6
   fragSpeed: 6
   fragDamage: 10
