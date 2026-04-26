@@ -6,5 +6,7 @@ public enum BulletType
     Bouncy,
     Area,    // Regular + Heavy
     Frag,    // Heavy + Bouncy
-    Target   // Regular + Bouncy
+    Target,  // Regular + Bouncy
+    Chain,   // Area + Bouncy
+    Piercing // Target + Heavy
 }

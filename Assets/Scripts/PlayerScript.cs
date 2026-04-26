@@ -73,7 +73,7 @@ public class PlayerScript : MonoBehaviour
         BulletData data = inventory.ActiveData;
         GameObject newBullet = Instantiate(sharedBulletPrefab, bulletSpawn.position, Quaternion.identity);
         newBullet.GetComponent<BulletScript>().Initialize(data, false);
-        newBullet.GetComponent<Rigidbody2D>().linearVelocity = directionMouse.normalized * data.speed + rb.linearVelocity;
+        newBullet.GetComponent<Rigidbody2D>().linearVelocity = directionMouse.normalized * data.speed;
     }
 
     public void Animations()

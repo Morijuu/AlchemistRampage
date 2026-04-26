@@ -8,6 +8,7 @@ public class BulletScript : MonoBehaviour
     private bool isEnemyBullet;
     private bool isFragment;
     private int bounceCount;
+    private int pierceCount;
 
     private Rigidbody2D rb;
     private Transform homingTarget;
@@ -70,6 +71,21 @@ public class BulletScript : MonoBehaviour
             return;
         }
 
+        if (data.bulletType == BulletType.Piercing)
+        {
+            if (health != null)
+            {
+                health.TakeDamage(data.damage);
+                pierceCount++;
+                if (pierceCount >= data.maxPierceCount)
+                    Destroy(gameObject);
+                return;
+            }
+            // Pared u obstáculo
+            Destroy(gameObject);
+            return;
+        }
+
         if (health != null)
         {
             health.TakeDamage(data.damage);
@@ -93,6 +109,9 @@ public class BulletScript : MonoBehaviour
                 break;
             case BulletType.Frag:
                 if (!isFragment) DoFrag(hitPosition, hitCollider);
+                break;
+            case BulletType.Chain:
+                if (!isFragment) DoChain(hitPosition, hitCollider);
                 break;
         }
     }
@@ -142,6 +161,36 @@ public class BulletScript : MonoBehaviour
 
             Rigidbody2D fragRb = frag.GetComponent<Rigidbody2D>();
             if (fragRb != null) fragRb.linearVelocity = dir * data.fragSpeed;
+        }
+    }
+
+    private void DoChain(Vector3 origin, Collider2D ignoreCollider)
+    {
+        GameObject prefab = BulletInventory.Instance?.bulletPrefab;
+        if (prefab == null) return;
+
+        GameObject[] allEnemies = GameObject.FindGameObjectsWithTag("Enemy");
+        int spawned = 0;
+
+        foreach (GameObject enemy in allEnemies)
+        {
+            if (spawned >= data.chainCount) break;
+
+            Collider2D enemyCol = enemy.GetComponent<Collider2D>();
+            if (ignoreCollider != null && enemyCol == ignoreCollider) continue;
+
+            float dist = Vector2.Distance(origin, enemy.transform.position);
+            if (dist > data.chainRange) continue;
+
+            Vector2 dir = ((Vector2)enemy.transform.position - (Vector2)origin).normalized;
+            GameObject chain = Instantiate(prefab, origin + (Vector3)(dir * 0.4f), Quaternion.identity);
+            BulletScript chainScript = chain.GetComponent<BulletScript>();
+            chainScript.Initialize(data, isEnemyBullet, fragment: true);
+
+            Rigidbody2D chainRb = chain.GetComponent<Rigidbody2D>();
+            if (chainRb != null) chainRb.linearVelocity = dir * data.speed;
+
+            spawned++;
         }
     }
 

@@ -71,6 +71,14 @@ public class BulletInventory : MonoBehaviour
             (a == BulletType.Bouncy  && b == BulletType.Regular))
             return BulletType.Target;
 
+        if ((a == BulletType.Area   && b == BulletType.Bouncy) ||
+            (a == BulletType.Bouncy && b == BulletType.Area))
+            return BulletType.Chain;
+
+        if ((a == BulletType.Target && b == BulletType.Heavy) ||
+            (a == BulletType.Heavy  && b == BulletType.Target))
+            return BulletType.Piercing;
+
         return BulletType.None;
     }
 }

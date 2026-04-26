@@ -26,4 +26,12 @@ public class BulletData : ScriptableObject
     public float homingTurnSpeed = 180f;
     public float homingStopDistance = 2f;
     public float homingDelay = 0.4f;       // segundos antes de empezar a corregir
+
+    [Header("Chain Bullet")]
+    public int chainCount = 3;
+    public float chainRange = 8f;
+    public int chainDamage = 15;
+
+    [Header("Piercing Bullet")]
+    public int maxPierceCount = 3;
 }

@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: babc6bfe4b0e2f5409f81c85b6695319, type: 3}
+  m_Name: Chain
+  m_EditorClassIdentifier: 
+  bulletType: 7
+  displayName: Chain
+  damage: 25
+  speed: 10
+  fireRate: 3
+  shotsPerPickup: 3
+  splashRadius: 2
+  splashDamage: 10
+  areaDuration: 4
+  areaTickRate: 0.5
+  areaEffectPrefab: {fileID: 0}
+  fragCount: 6
+  fragSpeed: 6
+  fragDamage: 10
+  homingTurnSpeed: 180
+  homingStopDistance: 2
+  homingDelay: 0.4
+  chainCount: 3
+  chainRange: 8
+  chainDamage: 15
+  maxPierceCount: 3
