@@ -513,12 +513,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e49ac71d5ff1344093840d01bd2b953, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 2.5
-  detectionRange: 7
-  shootRange: 5
+  speed: 7
+  detectionRange: 8
+  loseRange: 100
+  shootRange: 7
   projectilePrefab: {fileID: 281633708342098927, guid: 993100099508bda468f78e1ba97e43df, type: 3}
   shootCooldown: 2
-  projectileSpeed: 10
+  projectileSpeed: 15
+  wanderSpeed: 1
+  wanderChangeInterval: 2
 --- !u!114 &4575772373636261057
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -533,6 +536,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHealth: 40
   currentHealth: 0
+  isPlayer: 0
   bulletPickupPrefabs:
   - {fileID: 5406239416059164170, guid: ca7b9d96ef91f1f49975922fb9772513, type: 3}
   - {fileID: 6767887919996392655, guid: 6da0ac2857e518e4c856481bddb11c95, type: 3}

@@ -14,6 +14,12 @@ public class PlayerScript : MonoBehaviour
     [SerializeField] private Transform bulletSpawn;
 
     public float speed;
+    public float runspeed;
+    bool corriendo;
+    public bool agotado = false;
+
+    public float stamina = 100f;
+    public float maxStamina = 100f;
 
     private Vector2 direccion;
     private Vector2 directionMouse;
@@ -37,7 +43,34 @@ public class PlayerScript : MonoBehaviour
     void FixedUpdate()
     {
         direccion = input.actions["Move"].ReadValue<Vector2>();
-        rb.linearVelocity = direccion * speed;
+        corriendo = input.actions["Run"].IsPressed();
+
+        if (stamina <= 0)
+        {
+            agotado = true;
+        }
+
+        if (agotado && stamina >= 30f)
+        {
+            agotado = false;
+        }
+
+        if (corriendo && !agotado)
+        {
+            stamina -= Time.deltaTime * 10f;
+            rb.linearVelocity = direccion * runspeed;
+        }
+        else
+        {
+            rb.linearVelocity = direccion * speed;
+
+            if (stamina < maxStamina)
+            {
+                stamina += Time.deltaTime * (100f / 15f);
+            }
+        }
+
+        stamina = Mathf.Clamp(stamina, 0, maxStamina);
     }
 
     void Update()

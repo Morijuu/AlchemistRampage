@@ -13,10 +13,15 @@ public class PlayerHUD : MonoBehaviour
     [SerializeField] private TMP_Text healthText;
     [SerializeField] private Health playerHealth;
 
+    [SerializeField] private Image staminaFill;
+    [SerializeField] private TMP_Text staminaText;
+    [SerializeField] private PlayerScript playerMovement;
+
     private void Update()
     {
         UpdateAmmo();
         UpdateHealth();
+        UpdateStamina();
     }
 
     private void UpdateAmmo()
@@ -43,5 +48,18 @@ public class PlayerHUD : MonoBehaviour
         float ratio = (float)playerHealth.currentHealth / playerHealth.maxHealth;
         if (healthFill != null) healthFill.fillAmount = ratio;
         if (healthText != null) healthText.text = playerHealth.currentHealth + "/" + playerHealth.maxHealth;
+    }
+
+    private void UpdateStamina()
+    {
+        if (playerMovement == null) return;
+
+        float ratio = playerMovement.stamina / playerMovement.maxStamina;
+
+        if (staminaFill != null)
+            staminaFill.fillAmount = ratio;
+
+        if (staminaText != null)
+            staminaText.text = Mathf.RoundToInt(playerMovement.stamina) + "/" + playerMovement.maxStamina;
     }
 }

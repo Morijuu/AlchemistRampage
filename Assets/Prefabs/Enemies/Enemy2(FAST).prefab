@@ -233,6 +233,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHealth: 50
   currentHealth: 0
+  isPlayer: 0
   bulletPickupPrefabs:
   - {fileID: 5406239416059164170, guid: ca7b9d96ef91f1f49975922fb9772513, type: 3}
   - {fileID: 6767887919996392655, guid: 6da0ac2857e518e4c856481bddb11c95, type: 3}
@@ -292,8 +293,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 15fde78702bbf5c40a9fa0979010e888, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 4
-  detectionRange: 6
+  speed: 9.5
+  detectionRange: 7.5
+  loseRange: 100
+  wanderSpeed: 1
+  wanderChangeInterval: 2
 --- !u!114 &2816374788162214855
 MonoBehaviour:
   m_ObjectHideFlags: 0
