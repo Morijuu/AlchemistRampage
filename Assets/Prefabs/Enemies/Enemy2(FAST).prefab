@@ -238,7 +238,7 @@ MonoBehaviour:
   - {fileID: 5406239416059164170, guid: ca7b9d96ef91f1f49975922fb9772513, type: 3}
   - {fileID: 6767887919996392655, guid: 6da0ac2857e518e4c856481bddb11c95, type: 3}
   - {fileID: 4288882998555332803, guid: efe462408dede9c4d851d28351ea66cc, type: 3}
-  dropsPickup: 0
+  dropsPickup: 1
   dropChance: 0.5
 --- !u!114 &8664591899270686052
 MonoBehaviour:

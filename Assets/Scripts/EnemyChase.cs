@@ -38,14 +38,24 @@ public class EnemyChase : MonoBehaviour
         else if (state == State.Chasing && distance > loseRange)
             state = State.Wandering;
 
+        Vector2 moveDirection;
+
         if (state == State.Chasing)
         {
-            Vector2 direction = (player.position - transform.position).normalized;
-            rb.linearVelocity = direction * speed;
+            moveDirection = (player.position - transform.position).normalized;
+            rb.linearVelocity = moveDirection * speed;
         }
         else
         {
             Wander();
+            moveDirection = rb.linearVelocity.normalized;
+        }
+
+        // Rotar hacia la dirección de movimiento si se está moviendo
+        if (moveDirection.sqrMagnitude > 0.01f)
+        {
+            float angle = Mathf.Atan2(moveDirection.y, moveDirection.x) * Mathf.Rad2Deg;
+            rb.rotation = angle;
         }
     }
 
