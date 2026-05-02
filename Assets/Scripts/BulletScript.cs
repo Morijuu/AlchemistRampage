@@ -14,6 +14,9 @@ public class BulletScript : MonoBehaviour
     private Transform homingTarget;
     private float spawnTime;
 
+    private Vector2 previousPosition;
+    private Collider2D ownCollider;
+
     public void Initialize(BulletData bulletData, bool enemyBullet = false, bool fragment = false)
     {
         data = bulletData;
@@ -23,6 +26,7 @@ public class BulletScript : MonoBehaviour
 
         Collider2D col = GetComponent<Collider2D>();
         if (col != null) col.isTrigger = true;
+        ownCollider = col;
 
         Destroy(gameObject, BULLET_LIFETIME);
 
@@ -35,6 +39,7 @@ public class BulletScript : MonoBehaviour
     private void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        previousPosition = rb.position;
     }
 
     private void FixedUpdate()
@@ -42,6 +47,9 @@ public class BulletScript : MonoBehaviour
         if (data == null) return;
         if (data.bulletType == BulletType.Target)
             SteerTowardTarget();
+        if (data.bulletType == BulletType.Bouncy)
+            CheckBouncyRaycast();
+        previousPosition = rb.position;
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -52,24 +60,7 @@ public class BulletScript : MonoBehaviour
 
         Health health = other.GetComponent<Health>();
 
-        if (data.bulletType == BulletType.Bouncy)
-        {
-            if (health != null)
-                health.TakeDamage(data.damage);
-
-            bounceCount++;
-            if (bounceCount >= 3)
-            {
-                Destroy(gameObject);
-                return;
-            }
-
-            Vector2 closestPoint = other.ClosestPoint(transform.position);
-            Vector2 normal = ((Vector2)transform.position - closestPoint).normalized;
-            if (normal == Vector2.zero) normal = -rb.linearVelocity.normalized;
-            rb.linearVelocity = Vector2.Reflect(rb.linearVelocity, normal);
-            return;
-        }
+        if (data.bulletType == BulletType.Bouncy) return;
 
         if (data.bulletType == BulletType.Piercing)
         {
@@ -97,6 +88,35 @@ public class BulletScript : MonoBehaviour
         // Pared u obstáculo sin Health
         HandleHitEffect(transform.position, null);
         Destroy(gameObject);
+    }
+
+    private void CheckBouncyRaycast()
+    {
+        Vector2 movement = rb.position - previousPosition;
+        float distance = movement.magnitude;
+        if (distance < 0.001f) return;
+
+        RaycastHit2D[] hits = Physics2D.RaycastAll(previousPosition, movement.normalized, distance + 0.1f);
+        System.Array.Sort(hits, (a, b) => a.distance.CompareTo(b.distance));
+
+        foreach (RaycastHit2D hit in hits)
+        {
+            if (hit.collider == ownCollider) continue;
+            if (!isEnemyBullet && hit.collider.CompareTag("Player")) continue;
+            if (isEnemyBullet && hit.collider.CompareTag("Enemy")) continue;
+
+            Health health = hit.collider.GetComponent<Health>();
+            if (health != null)
+                health.TakeDamage(data.damage);
+
+            bounceCount++;
+            if (bounceCount >= 3) { Destroy(gameObject); return; }
+
+            rb.linearVelocity = Vector2.Reflect(rb.linearVelocity, hit.normal);
+            rb.position = hit.point + hit.normal * 0.05f;
+            previousPosition = rb.position;
+            return;
+        }
     }
 
     private void HandleHitEffect(Vector3 hitPosition, Collider2D hitCollider)

@@ -15,9 +15,9 @@ MonoBehaviour:
   bulletType: 3
   displayName: Bouncy
   damage: 15
-  speed: 15
+  speed: 30
   fireRate: 3
-  shotsPerPickup: 5
+  shotsPerPickup: 10
   splashRadius: 2
   splashDamage: 10
   areaDuration: 4
@@ -29,3 +29,7 @@ MonoBehaviour:
   homingTurnSpeed: 180
   homingStopDistance: 2
   homingDelay: 0.4
+  chainCount: 3
+  chainRange: 8
+  chainDamage: 15
+  maxPierceCount: 3

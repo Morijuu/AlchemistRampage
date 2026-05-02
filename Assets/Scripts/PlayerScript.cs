@@ -13,6 +13,11 @@ public class PlayerScript : MonoBehaviour
     [SerializeField] private GameObject sharedBulletPrefab;
     [SerializeField] private Transform bulletSpawn;
 
+    [Header("Raycast Shot (Regular)")]
+    [SerializeField] private LineRenderer raycastLine;
+    [SerializeField] private float raycastMaxDistance = 60f;
+    [SerializeField] private float raycastLineDuration = 0.08f;
+
     public float speed;
     public float runspeed;
     bool corriendo;
@@ -27,6 +32,11 @@ public class PlayerScript : MonoBehaviour
     private BulletInventory inventory;
     private float lastShootTime;
 
+    private Vector2 raycastEndPoint;
+    private float raycastLineEndTime;
+
+    private GameObject weaponObject;
+
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -38,6 +48,22 @@ public class PlayerScript : MonoBehaviour
     private void Start()
     {
         inventory = BulletInventory.Instance;
+
+        foreach (Transform t in GetComponentsInChildren<Transform>(true))
+            if (t.CompareTag("Weapon")) { weaponObject = t.gameObject; break; }
+
+        if (raycastLine == null)
+            raycastLine = gameObject.AddComponent<LineRenderer>();
+
+        raycastLine.positionCount = 2;
+        raycastLine.useWorldSpace = true;
+        raycastLine.startWidth = 0.05f;
+        raycastLine.endWidth = 0.05f;
+        raycastLine.material = new Material(Shader.Find("Sprites/Default"));
+        raycastLine.startColor = Color.white;
+        raycastLine.endColor = Color.white;
+        raycastLine.sortingOrder = 10;
+        raycastLine.enabled = false;
     }
 
     void FixedUpdate()
@@ -87,7 +113,29 @@ public class PlayerScript : MonoBehaviour
         transform.rotation = Quaternion.Euler(0f, 0f, smoothAngle);
 
         Animations();
-        Debug.DrawRay(transform.position, directionMouse.normalized * 10f, Color.green);
+        Debug.DrawRay(bulletSpawn.position, directionMouse.normalized * raycastMaxDistance, Color.green);
+
+        if (weaponObject != null)
+        {
+            bool hasAmmo = inventory != null && inventory.ActiveData != null
+                           && inventory.ActiveData.bulletType != BulletType.None
+                           && inventory.ShotCount > 0;
+            weaponObject.SetActive(hasAmmo);
+        }
+
+        if (raycastLine != null)
+        {
+            if (Time.time < raycastLineEndTime)
+            {
+                raycastLine.SetPosition(0, new Vector3(bulletSpawn.position.x, bulletSpawn.position.y, 0f));
+                raycastLine.SetPosition(1, new Vector3(raycastEndPoint.x, raycastEndPoint.y, 0f));
+                raycastLine.enabled = true;
+            }
+            else
+            {
+                raycastLine.enabled = false;
+            }
+        }
 
         if (input.actions["Attack"].IsPressed())
             Shoot();
@@ -104,9 +152,43 @@ public class PlayerScript : MonoBehaviour
 
         lastShootTime = Time.time;
         BulletData data = inventory.ActiveData;
-        GameObject newBullet = Instantiate(sharedBulletPrefab, bulletSpawn.position, Quaternion.identity);
-        newBullet.GetComponent<BulletScript>().Initialize(data, false);
-        newBullet.GetComponent<Rigidbody2D>().linearVelocity = directionMouse.normalized * data.speed;
+
+        if (data.bulletType == BulletType.Regular)
+        {
+            ShootRaycast(data);
+        }
+        else
+        {
+            GameObject newBullet = Instantiate(sharedBulletPrefab, bulletSpawn.position, Quaternion.identity);
+            newBullet.GetComponent<BulletScript>().Initialize(data, false);
+            newBullet.GetComponent<Rigidbody2D>().linearVelocity = directionMouse.normalized * data.speed;
+        }
+    }
+
+    private void ShootRaycast(BulletData data)
+    {
+        Vector2 origin = bulletSpawn.position;
+        Vector2 direction = directionMouse.normalized;
+
+        // RaycastAll para ignorar el propio collider del jugador
+        RaycastHit2D[] hits = Physics2D.RaycastAll(origin, direction, raycastMaxDistance);
+        System.Array.Sort(hits, (a, b) => a.distance.CompareTo(b.distance));
+
+        Vector2 endPoint = origin + direction * raycastMaxDistance;
+
+        foreach (RaycastHit2D hit in hits)
+        {
+            if (hit.collider.CompareTag("Player")) continue;
+
+            endPoint = hit.point;
+            Health health = hit.collider.GetComponent<Health>();
+            if (health != null)
+                health.TakeDamage(data.damage);
+            break;
+        }
+
+        raycastEndPoint = endPoint;
+        raycastLineEndTime = Time.time + raycastLineDuration;
     }
 
     public void Animations()

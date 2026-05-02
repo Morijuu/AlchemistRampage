@@ -14,15 +14,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bulletType: 1
   displayName: Regular
-  damage: 5
+  damage: 10
   speed: 30
   fireRate: 5
   shotsPerPickup: 15
   splashRadius: 2
   splashDamage: 10
+  areaDuration: 4
+  areaTickRate: 0.5
+  areaEffectPrefab: {fileID: 0}
   fragCount: 6
   fragSpeed: 6
   fragDamage: 10
   homingTurnSpeed: 180
   homingStopDistance: 2
   homingDelay: 0.4
+  chainCount: 3
+  chainRange: 8
+  chainDamage: 15
+  maxPierceCount: 3
