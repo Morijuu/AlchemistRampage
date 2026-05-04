@@ -79,7 +79,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
+  m_Sprite: {fileID: 4584626795143022266, guid: 96fc491a3649d594ba52859d7a83ac91, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -155,7 +155,7 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1, y: 1}
+    oldSize: {x: 3.7, y: 3.67}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -178,9 +178,12 @@ MonoBehaviour:
   maxHealth: 1
   currentHealth: 0
   heartHealAmount: 20
+  knockbackDistance: 0.5
+  playerKnockbackForce: 8
+  playerKnockbackTime: 0.2
   isPlayer: 0
   bulletPickupPrefabs: []
   dropsPickup: 1
-  dropChance: 1
-  heartPrefab: {fileID: 0}
-  heartDropChance: 0.3
+  dropChance: 0.364
+  heartPrefab: {fileID: 4172070467584808533, guid: 58c5ff23aa22d664c8e7872d435a053e, type: 3}
+  heartDropChance: 0.369

@@ -51,6 +51,14 @@ public class PlayerScript : MonoBehaviour
         health = GetComponent<Health>();
     }
 
+    private void OnTriggerEnter2D(Collider2D other)
+{
+    if (other.CompareTag("Flag"))
+    {
+        UIManager.Instance.ShowWin();
+    }
+}
+
     private void Start()
     {
         inventory = BulletInventory.Instance;
