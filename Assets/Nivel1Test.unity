@@ -9729,9 +9729,9 @@ MonoBehaviour:
   maxHealth: 100
   currentHealth: 0
   heartHealAmount: 20
-  knockbackDistance: 2
-  playerKnockbackForce: 20
-  playerKnockbackTime: 0.8
+  knockbackDistance: 1
+  playerKnockbackForce: 15
+  playerKnockbackTime: 0.3
   isPlayer: 1
   bulletPickupPrefabs: []
   dropsPickup: 0

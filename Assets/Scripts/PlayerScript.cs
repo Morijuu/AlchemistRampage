@@ -37,12 +37,18 @@ public class PlayerScript : MonoBehaviour
 
     private GameObject weaponObject;
 
+    // 🔽 AÑADIDO (para no hacer GetComponent cada frame)
+    private Health health;
+
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         sr = GetComponent<SpriteRenderer>();
         animator = GetComponentInChildren<Animator>();
         input = GetComponent<PlayerInput>();
+
+        // 🔽 AÑADIDO
+        health = GetComponent<Health>();
     }
 
     private void Start()
@@ -68,15 +74,14 @@ public class PlayerScript : MonoBehaviour
 
     void FixedUpdate()
     {
-        direccion = input.actions["Move"].ReadValue<Vector2>();
-        corriendo = input.actions["Run"].IsPressed();
-
-        Health health = GetComponent<Health>();
+        // 🔽 MODIFICADO (ANTES anulabas la velocidad → ahora solo bloqueas input)
         if (health != null && health.IsKnocked())
         {
-            rb.linearVelocity = Vector2.zero;
             return;
         }
+
+        direccion = input.actions["Move"].ReadValue<Vector2>();
+        corriendo = input.actions["Run"].IsPressed();
 
         if (stamina <= 0)
         {
@@ -115,7 +120,6 @@ public class PlayerScript : MonoBehaviour
         float targetAngle = Mathf.Atan2(directionMouse.y, directionMouse.x) * Mathf.Rad2Deg;
         float currentAngle = transform.eulerAngles.z;
 
-        // MoveTowardsAngle filtra el micro-jitter del mouse sin perder responsividad
         float smoothAngle = Mathf.MoveTowardsAngle(currentAngle, targetAngle, 720f * Time.deltaTime);
         transform.rotation = Quaternion.Euler(0f, 0f, smoothAngle);
 
@@ -148,7 +152,6 @@ public class PlayerScript : MonoBehaviour
             Shoot();
     }
 
-
     void Shoot()
     {
         if (inventory == null || inventory.ActiveData == null) return;
@@ -178,7 +181,6 @@ public class PlayerScript : MonoBehaviour
         Vector2 origin = bulletSpawn.position;
         Vector2 direction = directionMouse.normalized;
 
-        // RaycastAll para ignorar el propio collider del jugador
         RaycastHit2D[] hits = Physics2D.RaycastAll(origin, direction, raycastMaxDistance);
         System.Array.Sort(hits, (a, b) => a.distance.CompareTo(b.distance));
 
@@ -191,7 +193,7 @@ public class PlayerScript : MonoBehaviour
             endPoint = hit.point;
             Health health = hit.collider.GetComponent<Health>();
             if (health != null)
-                health.TakeDamage(data.damage, transform);
+                health.TakeDamage(data.damage, transform); // 🔽 MODIFICADO (para knockback correcto)
             break;
         }
 
