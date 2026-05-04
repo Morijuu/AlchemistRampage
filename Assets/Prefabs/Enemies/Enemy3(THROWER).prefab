@@ -519,8 +519,8 @@ MonoBehaviour:
   loseRange: 100
   shootRange: 7
   projectilePrefab: {fileID: 281633708342098927, guid: 993100099508bda468f78e1ba97e43df, type: 3}
-  shootCooldown: 2
-  projectileSpeed: 15
+  shootCooldown: 1.2
+  projectileSpeed: 25
   wanderSpeed: 1
   wanderChangeInterval: 2
 --- !u!114 &4575772373636261057
