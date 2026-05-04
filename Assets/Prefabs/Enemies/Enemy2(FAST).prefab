@@ -179,7 +179,7 @@ PolygonCollider2D:
   m_Enabled: 1
   serializedVersion: 3
   m_Density: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: 4cd7c494d43bde249b56a94ab3b3166e, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -234,8 +234,9 @@ MonoBehaviour:
   maxHealth: 50
   currentHealth: 0
   heartHealAmount: 20
-  knockbackForce: 20
-  knockbackDuration: 0.2
+  knockbackDistance: 0.5
+  playerKnockbackForce: 8
+  playerKnockbackTime: 0.2
   isPlayer: 0
   bulletPickupPrefabs:
   - {fileID: 5406239416059164170, guid: ca7b9d96ef91f1f49975922fb9772513, type: 3}
