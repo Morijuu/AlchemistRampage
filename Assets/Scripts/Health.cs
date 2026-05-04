@@ -65,14 +65,19 @@ public class Health : MonoBehaviour
 
     IEnumerator PlayerKnockbackCoroutine(Rigidbody2D rb, Vector2 direction)
     {
-        isKnocked = true;
+    isKnocked = true;
 
+    float timer = 0f;
+
+    while (timer < playerKnockbackTime)
+    {
         rb.linearVelocity = direction * playerKnockbackForce;
-
-        yield return new WaitForSeconds(playerKnockbackTime);
-
-        isKnocked = false;
+        timer += Time.deltaTime;
+        yield return null;
     }
+
+    isKnocked = false;
+}
         public bool IsKnocked()
     {
         return isKnocked;

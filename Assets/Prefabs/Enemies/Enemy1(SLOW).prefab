@@ -362,7 +362,7 @@ BoxCollider2D:
   m_Enabled: 1
   serializedVersion: 3
   m_Density: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: 4cd7c494d43bde249b56a94ab3b3166e, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -483,7 +483,10 @@ MonoBehaviour:
   loseRange: 100
   wanderSpeed: 2
   wanderChangeInterval: 4
+<<<<<<< HEAD
   animator: {fileID: 3811923219576325637}
+=======
+>>>>>>> f2b8de7526370c4588469736d570d3b3fb9b11dc
   attackPauseTime: 1
 --- !u!114 &4323081856659878864
 MonoBehaviour:
