@@ -66,5 +66,6 @@
     "explorer.fileNesting.patterns": {
         "*.sln": "*.csproj",
     },
-    "dotnet.defaultSolution": "AlchemistRampage.sln"
+    "dotnet.defaultSolution": "AlchemistRampage.sln",
+    "claudeCodeChat.permissions.yoloMode": false
 }

@@ -5,6 +5,8 @@ public class Health : MonoBehaviour
     public int maxHealth = 100;
     public int currentHealth;
 
+    public int heartHealAmount = 20;
+
     [Header("Player")]
     [SerializeField] private bool isPlayer = false;
 
@@ -25,6 +27,11 @@ public class Health : MonoBehaviour
         if (currentHealth <= 0)
             Die();
     }
+    public void Heal(int amount)
+{
+    currentHealth += amount;
+    currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
+}
 
     void Die()
     {
@@ -64,4 +71,18 @@ public class Health : MonoBehaviour
 
         Destroy(gameObject);
     }
+
+    private void OnTriggerEnter2D(Collider2D other)
+{
+    if (!isPlayer) return;
+
+    if (other.CompareTag("Corazon"))
+    {
+        if (currentHealth < maxHealth)
+        {
+            Heal(heartHealAmount);
+            Destroy(other.gameObject);
+        }
+    }
+}
 }
