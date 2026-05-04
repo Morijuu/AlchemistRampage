@@ -17,6 +17,7 @@ public class EnemyThrowerChase : MonoBehaviour
 
     private Transform player;
     private Rigidbody2D rb;
+    private Animator animator;
 
     private enum State { Wandering, Chasing }
     private State state = State.Wandering;
@@ -29,6 +30,8 @@ public class EnemyThrowerChase : MonoBehaviour
     {
         player = GameObject.FindGameObjectWithTag("Player")?.transform;
         rb = GetComponent<Rigidbody2D>();
+        animator = GetComponentInChildren<Animator>();
+        Debug.Log("Animator encontrado: " + (animator != null ? animator.gameObject.name : "NULL"));
         PickNewWanderDirection();
     }
 
@@ -52,6 +55,8 @@ public class EnemyThrowerChase : MonoBehaviour
         {
             Wander();
         }
+
+        animator?.SetBool("isWalking", rb.linearVelocity.magnitude > 0f);
     }
 
     void Update()

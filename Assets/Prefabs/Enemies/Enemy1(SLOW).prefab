@@ -440,6 +440,9 @@ MonoBehaviour:
   maxHealth: 65
   currentHealth: 0
   heartHealAmount: 20
+  knockbackDistance: 0.5
+  playerKnockbackForce: 8
+  playerKnockbackTime: 0.2
   isPlayer: 0
   bulletPickupPrefabs:
   - {fileID: 5406239416059164170, guid: ca7b9d96ef91f1f49975922fb9772513, type: 3}
@@ -449,10 +452,6 @@ MonoBehaviour:
   dropChance: 0.5
   heartPrefab: {fileID: 0}
   heartDropChance: 0.3
-  spriteRenderer: {fileID: 0}
-  flashDuration: 0.1
-  flashColor: {r: 1, g: 0, b: 0, a: 1}
-  invulTime: 2
 --- !u!114 &2112101925319782382
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -484,7 +483,8 @@ MonoBehaviour:
   loseRange: 100
   wanderSpeed: 2
   wanderChangeInterval: 4
-  stunTime: 1
+  animator: {fileID: 3811923219576325637}
+  attackPauseTime: 1
 --- !u!114 &4323081856659878864
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -620,7 +620,7 @@ Animator:
   m_GameObject: {fileID: 7425762764191623225}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: e6a88b6a284307a44a252b39a5638574, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0

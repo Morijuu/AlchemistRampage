@@ -12,6 +12,7 @@ public class EnemyChase : MonoBehaviour
 
     private Transform player;
     private Rigidbody2D rb;
+    [SerializeField] private Animator animator;
 
     private enum State { Wandering, Chasing }
     private State state = State.Wandering;
@@ -67,6 +68,9 @@ public class EnemyChase : MonoBehaviour
             float angle = Mathf.Atan2(moveDirection.y, moveDirection.x) * Mathf.Rad2Deg;
             rb.rotation = angle;
         }
+
+        if (animator != null && animator.runtimeAnimatorController != null)
+            animator.SetBool("isWalking", rb.linearVelocity.magnitude > 0f);
     }
 
     // 🔽 AÑADIDO

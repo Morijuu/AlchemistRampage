@@ -3614,11 +3614,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3090892188277821664, guid: 97970daff0e14c946bca0392efb6bd8c, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -72.47398
+      value: -71.12
       objectReference: {fileID: 0}
     - target: {fileID: 3090892188277821664, guid: 97970daff0e14c946bca0392efb6bd8c, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 39.038105
+      value: 22.56
       objectReference: {fileID: 0}
     - target: {fileID: 3090892188277821664, guid: 97970daff0e14c946bca0392efb6bd8c, type: 3}
       propertyPath: m_LocalPosition.z
@@ -9729,7 +9729,7 @@ MonoBehaviour:
   maxHealth: 100
   currentHealth: 0
   heartHealAmount: 20
-  knockbackDistance: 2
+  knockbackDistance: 0.1
   playerKnockbackForce: 20
   playerKnockbackTime: 0.8
   isPlayer: 1
