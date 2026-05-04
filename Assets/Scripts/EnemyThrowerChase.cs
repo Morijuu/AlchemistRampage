@@ -31,7 +31,6 @@ public class EnemyThrowerChase : MonoBehaviour
         player = GameObject.FindGameObjectWithTag("Player")?.transform;
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponentInChildren<Animator>();
-        Debug.Log("Animator encontrado: " + (animator != null ? animator.gameObject.name : "NULL"));
         PickNewWanderDirection();
     }
 

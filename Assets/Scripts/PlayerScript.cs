@@ -30,7 +30,7 @@ public class PlayerScript : MonoBehaviour
     private Vector2 directionMouse;
 
     private BulletInventory inventory;
-    private float lastShootTime;
+    private float lastShootTime = float.NegativeInfinity;
 
     private Vector2 raycastEndPoint;
     private float raycastLineEndTime;
