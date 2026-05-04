@@ -66,7 +66,7 @@ public class BulletScript : MonoBehaviour
         {
             if (health != null)
             {
-                health.TakeDamage(data.damage);
+                health.TakeDamage(data.damage, transform);
                 pierceCount++;
                 if (pierceCount >= data.maxPierceCount)
                     Destroy(gameObject);
@@ -79,7 +79,7 @@ public class BulletScript : MonoBehaviour
 
         if (health != null)
         {
-            health.TakeDamage(data.damage);
+            health.TakeDamage(data.damage, transform);
             HandleHitEffect(transform.position, other);
             Destroy(gameObject);
             return;
@@ -107,7 +107,7 @@ public class BulletScript : MonoBehaviour
 
             Health health = hit.collider.GetComponent<Health>();
             if (health != null)
-                health.TakeDamage(data.damage);
+                health.TakeDamage(data.damage, transform);
 
             bounceCount++;
             if (bounceCount >= 3) { Destroy(gameObject); return; }

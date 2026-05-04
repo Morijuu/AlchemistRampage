@@ -71,6 +71,13 @@ public class PlayerScript : MonoBehaviour
         direccion = input.actions["Move"].ReadValue<Vector2>();
         corriendo = input.actions["Run"].IsPressed();
 
+        Health health = GetComponent<Health>();
+        if (health != null && health.IsKnocked())
+        {
+            rb.linearVelocity = Vector2.zero;
+            return;
+        }
+
         if (stamina <= 0)
         {
             agotado = true;
@@ -141,6 +148,7 @@ public class PlayerScript : MonoBehaviour
             Shoot();
     }
 
+
     void Shoot()
     {
         if (inventory == null || inventory.ActiveData == null) return;
@@ -183,7 +191,7 @@ public class PlayerScript : MonoBehaviour
             endPoint = hit.point;
             Health health = hit.collider.GetComponent<Health>();
             if (health != null)
-                health.TakeDamage(data.damage);
+                health.TakeDamage(data.damage, transform);
             break;
         }
 

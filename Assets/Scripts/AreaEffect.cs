@@ -37,7 +37,7 @@ public class AreaEffect : MonoBehaviour
             tickTimer = 0f;
             inZone.RemoveWhere(h => h == null);
             foreach (Health h in new List<Health>(inZone))
-                h.TakeDamage(tickDamage);
+                h.TakeDamage(tickDamage, transform);
         }
 
         // Fade out en los últimos 1.5 segundos

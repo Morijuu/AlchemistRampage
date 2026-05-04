@@ -15,7 +15,7 @@ public class EnemyBulletScript : MonoBehaviour
 
         Health health = other.GetComponent<Health>();
         if (health != null)
-            health.TakeDamage(damage);
+            health.TakeDamage(damage, transform );
 
         Destroy(gameObject);
     }

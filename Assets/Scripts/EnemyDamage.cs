@@ -11,7 +11,6 @@ public class EnemyDamage : MonoBehaviour
     {
         timer += Time.deltaTime;
     }
-    
 
     private void OnCollisionStay2D(Collision2D collision)
     {
@@ -21,7 +20,13 @@ public class EnemyDamage : MonoBehaviour
 
             if (health != null)
             {
-                health.TakeDamage(damage);
+                health.TakeDamage(damage, transform);
+
+                // 🔽 AÑADIDO
+                EnemyChase chase = GetComponent<EnemyChase>();
+                if (chase != null)
+                    chase.PauseAfterAttack();
+
                 timer = 0f;
             }
         }

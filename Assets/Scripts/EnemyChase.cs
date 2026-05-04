@@ -19,6 +19,10 @@ public class EnemyChase : MonoBehaviour
     private Vector2 wanderDirection;
     private float wanderTimer;
 
+    // 🔽 AÑADIDO
+    [SerializeField] private float attackPauseTime = 1f;
+    private float attackPauseTimer = 0f;
+
     void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player")?.transform;
@@ -28,11 +32,18 @@ public class EnemyChase : MonoBehaviour
 
     void FixedUpdate()
     {
+        // 🔽 AÑADIDO
+        if (attackPauseTimer > 0)
+        {
+            attackPauseTimer -= Time.fixedDeltaTime;
+            rb.linearVelocity = Vector2.zero;
+            return;
+        }
+
         if (player == null) { rb.linearVelocity = Vector2.zero; return; }
 
         float distance = Vector2.Distance(transform.position, player.position);
 
-        // Transiciones de estado
         if (state == State.Wandering && distance <= detectionRange)
             state = State.Chasing;
         else if (state == State.Chasing && distance > loseRange)
@@ -51,12 +62,17 @@ public class EnemyChase : MonoBehaviour
             moveDirection = rb.linearVelocity.normalized;
         }
 
-        // Rotar hacia la direcci�n de movimiento si se est� moviendo
         if (moveDirection.sqrMagnitude > 0.01f)
         {
             float angle = Mathf.Atan2(moveDirection.y, moveDirection.x) * Mathf.Rad2Deg;
             rb.rotation = angle;
         }
+    }
+
+    // 🔽 AÑADIDO
+    public void PauseAfterAttack()
+    {
+        attackPauseTimer = attackPauseTime;
     }
 
     void Wander()
