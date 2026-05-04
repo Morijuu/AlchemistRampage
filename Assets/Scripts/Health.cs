@@ -7,6 +7,7 @@ public class Health : MonoBehaviour
 
     public int heartHealAmount = 20;
 
+
     [Header("Player")]
     [SerializeField] private bool isPlayer = false;
 
@@ -14,6 +15,8 @@ public class Health : MonoBehaviour
     [SerializeField] private GameObject[] bulletPickupPrefabs;
     [SerializeField] private bool dropsPickup = true;
     [SerializeField] [Range(0f, 1f)] private float dropChance = 1f;
+    [SerializeField] private GameObject heartPrefab;
+    [SerializeField] [Range(0f, 1f)] private float heartDropChance = 0.3f;
 
     void Awake()
     {
@@ -48,6 +51,11 @@ public class Health : MonoBehaviour
 
         if (dropsPickup)
         {
+            if (heartPrefab != null && Random.value <= heartDropChance)
+            {
+            Instantiate(heartPrefab, transform.position, Quaternion.identity);
+            }
+            
             if (bulletPickupPrefabs == null || bulletPickupPrefabs.Length == 0)
             {
                 Debug.LogWarning($"{gameObject.name}: bulletPickupPrefabs vacío.");
