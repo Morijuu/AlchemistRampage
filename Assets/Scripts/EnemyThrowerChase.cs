@@ -57,6 +57,13 @@ public class EnemyThrowerChase : MonoBehaviour
         }
 
         animator?.SetBool("isWalking", rb.linearVelocity.magnitude > 0f);
+
+        Vector2 lookDir = state == State.Chasing
+            ? (Vector2)(player.position - transform.position)
+            : wanderDirection;
+
+        if (lookDir.sqrMagnitude > 0.01f)
+            rb.rotation = Mathf.Atan2(lookDir.y, lookDir.x) * Mathf.Rad2Deg;
     }
 
     void Update()
