@@ -38,8 +38,16 @@ public class EnemyChase : MonoBehaviour
         {
             attackPauseTimer -= Time.fixedDeltaTime;
             rb.linearVelocity = Vector2.zero;
+            if (animator != null && animator.runtimeAnimatorController != null)
+            {
+                animator.SetBool("isAttacking", true);
+                animator.SetBool("isWalking", false);
+            }
             return;
         }
+
+        if (animator != null && animator.runtimeAnimatorController != null)
+            animator.SetBool("isAttacking", false);
 
         if (player == null) { rb.linearVelocity = Vector2.zero; return; }
 

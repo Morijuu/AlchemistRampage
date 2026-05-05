@@ -25,13 +25,13 @@ public class EnemyThrowerChase : MonoBehaviour
     private Vector2 wanderDirection;
     private float wanderTimer;
     private float shootTimer;
+    private float attackAnimTimer;
 
     void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player")?.transform;
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponentInChildren<Animator>();
-        Debug.Log("Animator encontrado: " + (animator != null ? animator.gameObject.name : "NULL"));
         PickNewWanderDirection();
     }
 
@@ -56,7 +56,9 @@ public class EnemyThrowerChase : MonoBehaviour
             Wander();
         }
 
+        if (attackAnimTimer > 0) attackAnimTimer -= Time.fixedDeltaTime;
         animator?.SetBool("isWalking", rb.linearVelocity.magnitude > 0f);
+        animator?.SetBool("isAttacking", attackAnimTimer > 0);
 
         Vector2 lookDir = state == State.Chasing
             ? (Vector2)(player.position - transform.position)
@@ -76,6 +78,7 @@ public class EnemyThrowerChase : MonoBehaviour
         if (distance <= shootRange && shootTimer >= shootCooldown)
         {
             Shoot();
+            attackAnimTimer = shootCooldown;
             shootTimer = 0f;
         }
     }

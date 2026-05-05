@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: d8d53baa8636544449d6047b34e75683
+guid: 872ba4824550d80419856636c1105a85
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -7614986842246624362
-    second: ZL-der_0
+      213: 324324603180661081
+    second: 26665-3-finish-line-transparent_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -37,7 +37,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 0
+    filterMode: 1
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -46,13 +46,13 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 1
+  spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
   spritePixelsToUnits: 100
-  spriteBorder: {x: 73, y: 88, z: 55, w: 117}
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
   alphaIsTransparency: 1
@@ -100,23 +100,23 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: ZL-der_0
+      name: 26665-3-finish-line-transparent_0
       rect:
         serializedVersion: 2
-        x: 72
-        y: 86
-        width: 381
-        height: 306
+        x: 0
+        y: 119
+        width: 400
+        height: 178
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 69bcd9a10d1225690800000000000000
-      internalID: -7614986842246624362
+      spriteID: 959b08c128b308400800000000000000
+      internalID: 324324603180661081
       vertices: []
       indices: 
       edges: []
@@ -125,8 +125,8 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 5e97eb03825dee720800000000000000
-    internalID: 1537655665
+    spriteID: 
+    internalID: 0
     vertices: []
     indices: 
     edges: []
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      ZL-der_0: -7614986842246624362
+      26665-3-finish-line-transparent_0: 324324603180661081
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

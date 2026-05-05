@@ -17,6 +17,10 @@ public class PlayerHUD : MonoBehaviour
     [SerializeField] private TMP_Text staminaText;
     [SerializeField] private PlayerScript playerMovement;
 
+    [Header("Stamina Colors")]
+    [SerializeField] private Color normalColor = Color.white;
+    [SerializeField] private Color agotadoColor = Color.red;
+
     private void Update()
     {
         UpdateAmmo();
@@ -50,16 +54,26 @@ public class PlayerHUD : MonoBehaviour
         if (healthText != null) healthText.text = playerHealth.currentHealth + "/" + playerHealth.maxHealth;
     }
 
-    private void UpdateStamina()
+private void UpdateStamina()
+{
+    if (playerMovement == null) return;
+
+    float ratio = playerMovement.stamina / playerMovement.maxStamina;
+
+    if (staminaFill != null)
+        staminaFill.fillAmount = ratio;
+
+    if (staminaText != null)
+        staminaText.text = Mathf.RoundToInt(playerMovement.stamina) + "/" + playerMovement.maxStamina;
+
+    // 🔽 SOLO depende de agotado (lo que tú quieres)
+    if (staminaFill != null)
     {
-        if (playerMovement == null) return;
-
-        float ratio = playerMovement.stamina / playerMovement.maxStamina;
-
-        if (staminaFill != null)
-            staminaFill.fillAmount = ratio;
-
-        if (staminaText != null)
-            staminaText.text = Mathf.RoundToInt(playerMovement.stamina) + "/" + playerMovement.maxStamina;
+        if (playerMovement.agotado)
+            staminaFill.color = agotadoColor;   // 🔴 no puede sprintar
+        else
+            staminaFill.color = normalColor;    // ⚪ sí puede sprintar
     }
+}
+
 }

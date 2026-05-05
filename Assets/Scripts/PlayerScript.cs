@@ -30,7 +30,7 @@ public class PlayerScript : MonoBehaviour
     private Vector2 directionMouse;
 
     private BulletInventory inventory;
-    private float lastShootTime;
+    private float lastShootTime = float.NegativeInfinity;
 
     private Vector2 raycastEndPoint;
     private float raycastLineEndTime;
@@ -50,6 +50,14 @@ public class PlayerScript : MonoBehaviour
         // 🔽 AÑADIDO
         health = GetComponent<Health>();
     }
+
+    private void OnTriggerEnter2D(Collider2D other)
+{
+    if (other.CompareTag("Flag"))
+    {
+        UIManager.Instance.ShowWin();
+    }
+}
 
     private void Start()
     {

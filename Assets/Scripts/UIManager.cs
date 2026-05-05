@@ -9,17 +9,27 @@ public class UIManager : MonoBehaviour
     [SerializeField] private GameObject pausePanel;
     [SerializeField] private GameObject gameOverPanel;
 
+    // 🔽 AÑADIDO
+    [SerializeField] private GameObject winPanel;
+
     private bool isPaused = false;
 
     private void Awake()
     {
         Instance = this;
+
+        // 🔽 IMPORTANTE (evita juego congelado al iniciar)
+        Time.timeScale = 1f;
     }
 
     private void Start()
     {
         pausePanel.SetActive(false);
         gameOverPanel.SetActive(false);
+
+        // 🔽 AÑADIDO
+        if (winPanel != null)
+            winPanel.SetActive(false);
     }
 
     private void Update()
@@ -57,7 +67,21 @@ public class UIManager : MonoBehaviour
         Time.timeScale = 0f;
     }
 
-    private bool IsGameOverShowing() => gameOverPanel.activeSelf;
+    // --- Win --- 🔽 AÑADIDO (MISMO FORMATO QUE GAME OVER)
+
+    public void ShowWin()
+    {
+        if (winPanel == null) { Debug.LogError("winPanel no asignado en UIManager."); return; }
+        Debug.Log("Activando: " + winPanel.name);
+        winPanel.SetActive(true);
+        Time.timeScale = 0f;
+    }
+
+    private bool IsGameOverShowing()
+    {
+        // 🔽 MODIFICADO (para bloquear pausa también en win)
+        return gameOverPanel.activeSelf || (winPanel != null && winPanel.activeSelf);
+    }
 
     // --- Botones ---
 
