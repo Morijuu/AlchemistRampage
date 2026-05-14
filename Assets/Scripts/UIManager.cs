@@ -27,7 +27,6 @@ public class UIManager : MonoBehaviour
         pausePanel.SetActive(false);
         gameOverPanel.SetActive(false);
 
-        // 🔽 AÑADIDO
         if (winPanel != null)
             winPanel.SetActive(false);
     }
@@ -95,5 +94,11 @@ public class UIManager : MonoBehaviour
     {
         Time.timeScale = 1f;
         Application.Quit();
+    }
+
+
+    public void BonusLevel()
+    {
+        SceneManager.LoadScene("Level2");
     }
 }

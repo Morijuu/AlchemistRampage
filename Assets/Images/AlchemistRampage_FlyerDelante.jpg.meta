@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 872ba4824550d80419856636c1105a85
+guid: 742e9c4770ecc904b838e6c0d9968e17
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 324324603180661081
-    second: 26665-3-finish-line-transparent_0
+      213: 6231289721442620208
+    second: AlchemistRampage_FlyerDelante_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -84,19 +84,6 @@ TextureImporter:
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 4
-    buildTarget: Standalone
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
-    textureFormat: -1
-    textureCompression: 1
-    compressionQuality: 50
-    crunchedCompression: 0
-    allowsAlphaSplitting: 0
-    overridden: 0
-    ignorePlatformSupport: 0
-    androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 4
     buildTarget: iOS
     maxTextureSize: 2048
     resizeAlgorithm: 0
@@ -111,6 +98,19 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 4
     buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
@@ -152,13 +152,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: 26665-3-finish-line-transparent_0
+      name: AlchemistRampage_FlyerDelante_0
       rect:
         serializedVersion: 2
         x: 0
-        y: 119
-        width: 192
-        height: 178
+        y: 1283
+        width: 3508
+        height: 3206
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -167,8 +167,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 959b08c128b308400800000000000000
-      internalID: 324324603180661081
+      spriteID: 0335123acfcf97650800000000000000
+      internalID: 6231289721442620208
       vertices: []
       indices: 
       edges: []
@@ -177,7 +177,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 191dd50736544894296e3f5b668d79db
+    spriteID: 6ed9dd73d6e33d84f9a110a8abaac0af
     internalID: 0
     vertices: []
     indices: 
@@ -187,7 +187,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      26665-3-finish-line-transparent_0: 324324603180661081
+      AlchemistRampage_FlyerDelante_0: 6231289721442620208
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
