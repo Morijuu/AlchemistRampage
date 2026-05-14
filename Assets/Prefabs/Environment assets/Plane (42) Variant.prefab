@@ -1,0 +1,63 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &8078977304932714022
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 4636089332308017479, guid: bc058de3aade94d4fa12bce26469599c, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: e96457b3fc0d02d4da13f42195634588, type: 2}
+    - target: {fileID: 5936310723039893546, guid: bc058de3aade94d4fa12bce26469599c, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -59.74518
+      objectReference: {fileID: 0}
+    - target: {fileID: 5936310723039893546, guid: bc058de3aade94d4fa12bce26469599c, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 4.384248
+      objectReference: {fileID: 0}
+    - target: {fileID: 5936310723039893546, guid: bc058de3aade94d4fa12bce26469599c, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 15.02
+      objectReference: {fileID: 0}
+    - target: {fileID: 5936310723039893546, guid: bc058de3aade94d4fa12bce26469599c, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.5000007
+      objectReference: {fileID: 0}
+    - target: {fileID: 5936310723039893546, guid: bc058de3aade94d4fa12bce26469599c, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0.5000007
+      objectReference: {fileID: 0}
+    - target: {fileID: 5936310723039893546, guid: bc058de3aade94d4fa12bce26469599c, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0.49999928
+      objectReference: {fileID: 0}
+    - target: {fileID: 5936310723039893546, guid: bc058de3aade94d4fa12bce26469599c, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0.49999928
+      objectReference: {fileID: 0}
+    - target: {fileID: 5936310723039893546, guid: bc058de3aade94d4fa12bce26469599c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5936310723039893546, guid: bc058de3aade94d4fa12bce26469599c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 90
+      objectReference: {fileID: 0}
+    - target: {fileID: 5936310723039893546, guid: bc058de3aade94d4fa12bce26469599c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: -90
+      objectReference: {fileID: 0}
+    - target: {fileID: 6193141903666418567, guid: bc058de3aade94d4fa12bce26469599c, type: 3}
+      propertyPath: m_Name
+      value: Plane (42) Variant
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: bc058de3aade94d4fa12bce26469599c, type: 3}
