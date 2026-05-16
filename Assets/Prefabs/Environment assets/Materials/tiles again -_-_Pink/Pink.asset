@@ -39,7 +39,7 @@ MonoBehaviour:
       Index: 0
       Type: 8
       Channel: baseColor
-    OutputTexture: {fileID: 2800000, guid: d0dcedc91d117ca47927dca68e14ba8f, type: 3}
+    OutputTexture: {fileID: 2800000, guid: a770a9d1dabf47f4f8aaa8468bc3009e, type: 3}
     sRGB: 1
     IsVirtual: 0
     IsAlphaAssignable: 1
@@ -55,7 +55,7 @@ MonoBehaviour:
       Index: 1
       Type: 8
       Channel: normal
-    OutputTexture: {fileID: 2800000, guid: ca1c3bb217356d24e843c4e9c72f1bc3, type: 3}
+    OutputTexture: {fileID: 2800000, guid: e3473f6ab0f52d24f9a6ab0d78699ea6, type: 3}
     sRGB: 0
     IsVirtual: 0
     IsAlphaAssignable: 0
@@ -87,7 +87,7 @@ MonoBehaviour:
       Index: 3
       Type: 8
       Channel: metallic
-    OutputTexture: {fileID: 2800000, guid: fa7335a597b1c504ca5d7cf595e2ad89, type: 3}
+    OutputTexture: {fileID: 2800000, guid: 47ba8da5d3d772c4096e6a99f790fa90, type: 3}
     sRGB: 0
     IsVirtual: 0
     IsAlphaAssignable: 1
@@ -103,7 +103,7 @@ MonoBehaviour:
       Index: 4
       Type: 8
       Channel: height
-    OutputTexture: {fileID: 2800000, guid: 1653266c621d8454ca057f7505b9f748, type: 3}
+    OutputTexture: {fileID: 2800000, guid: 4c6ed9d579dce4140a08f77417f8824c, type: 3}
     sRGB: 1
     IsVirtual: 0
     IsAlphaAssignable: 1
@@ -146,7 +146,7 @@ MonoBehaviour:
   IsRuntimeOnly: 0
   GenerateAllOutputs: 0
   GenerateAllMipmaps: 1
-  OutputMaterial: {fileID: 2100000, guid: 4394c10cad990c54fa382eed003a2415, type: 2}
+  OutputMaterial: {fileID: 2100000, guid: 2fbe01975d71b4a44bb8ecadf180f304, type: 2}
   DefaultPreset: " <sbspreset pkgurl=\"pkg://Substance_graph\" label=\"\" >\n  <presetinput
     identifier=\"$outputsize\" uid=\"3795302352\" type=\"8\" value=\"10,10\" />\n 
     <presetinput identifier=\"y_amount\" uid=\"2238896733\" type=\"4\" value=\"5\"
@@ -158,8 +158,8 @@ MonoBehaviour:
     value=\"0.270588,0.0562399,0.0562399,1\" />\n  <presetinput identifier=\"balance_1\"
     uid=\"2238895407\" type=\"0\" value=\"0.66\" />\n </sbspreset>\n"
   MaterialShader: Universal Render Pipeline/Lit
-  RenderTextures: 1
-  OutputRemaped: 1
+  RenderTextures: 0
+  OutputRemaped: 0
   Presets:
   - Info:
       Label: Blue tiles
