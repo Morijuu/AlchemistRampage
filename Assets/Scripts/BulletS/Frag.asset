@@ -15,7 +15,7 @@ MonoBehaviour:
   bulletType: 5
   displayName: Frag
   damage: 20
-  speed: 8
+  speed: 20
   fireRate: 3
   shotsPerPickup: 8
   splashRadius: 2

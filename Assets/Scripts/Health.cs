@@ -15,6 +15,12 @@ public class Health : MonoBehaviour
     private bool isKnocked = false;
 
 
+    [Header("Hit Flash")]
+    [SerializeField] private SpriteRenderer sr;
+    [SerializeField] private float flashDuration = 0.12f;
+    private Color originalColor;
+    private Coroutine flashCoroutine;
+
     [Header("Player")]
     [SerializeField] private bool isPlayer = false;
 
@@ -28,6 +34,7 @@ public class Health : MonoBehaviour
     void Awake()
     {
         currentHealth = maxHealth;
+        if (sr != null) originalColor = sr.color;
     }
 
     public void TakeDamage(int damage, Transform attacker)
@@ -35,12 +42,25 @@ public class Health : MonoBehaviour
         currentHealth -= damage;
 
         if (isPlayer)
-            ApplyPlayerKnockback(attacker); 
+            ApplyPlayerKnockback(attacker);
         else
-            ApplyKnockback(attacker); 
+            ApplyKnockback(attacker);
+
+        if (sr != null && !isPlayer)
+        {
+            if (flashCoroutine != null) StopCoroutine(flashCoroutine);
+            flashCoroutine = StartCoroutine(DamageFlash());
+        }
 
         if (currentHealth <= 0)
             Die();
+    }
+
+    IEnumerator DamageFlash()
+    {
+        sr.color = new Color(1f, 0.2f, 0.2f, 0.7f);
+        yield return new WaitForSeconds(flashDuration);
+        sr.color = originalColor;
     }
 
 
@@ -134,10 +154,12 @@ public class Health : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
 {
+    Debug.Log($"OnTriggerEnter2D: {other.gameObject.name} tag={other.tag}, isPlayer={isPlayer}");
     if (!isPlayer) return;
 
     if (other.CompareTag("Corazon"))
     {
+        Debug.Log($"Curando {heartHealAmount}. Vida actual: {currentHealth}/{maxHealth}");
         if (currentHealth < maxHealth)
         {
             Heal(heartHealAmount);

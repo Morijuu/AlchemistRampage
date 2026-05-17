@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: babc6bfe4b0e2f5409f81c85b6695319, type: 3}
   m_Name: Piercing
   m_EditorClassIdentifier: 
-  bulletType: 7
-  displayName: Chain
+  bulletType: 8
+  displayName: Piercing
   damage: 25
-  speed: 10
+  speed: 20
   fireRate: 3
   shotsPerPickup: 9
   splashRadius: 2

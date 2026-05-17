@@ -51,13 +51,14 @@ public class BulletInventory : MonoBehaviour
         BulletData fusedData = GetDataForType(fusedType);
         BulletData incomingData = GetDataForType(incomingType);
 
+        Debug.Log($"FuseBullet llamado: fusedType={fusedType}, incomingType={incomingType}");
+        Debug.Log($"fusedData={fusedData?.name ?? "NULL"}, incomingData={incomingData?.name ?? "NULL"}");
+
         if (fusedData == null || incomingData == null) return;
 
-        // Sumamos: Tus balas actuales + las balas que te da el pickup del suelo
         shotCount += incomingData.shotsPerPickup;
-        
-        // Cambiamos tu tipo de bala al nuevo tipo fusionado
         activeData = fusedData;
+        Debug.Log($"Fusion aplicada. activeData ahora: {activeData.name} (bulletType={activeData.bulletType})");
     }
 
     public bool TryConsumeBullet()

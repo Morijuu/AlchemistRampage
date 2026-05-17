@@ -15,7 +15,7 @@ MonoBehaviour:
   bulletType: 6
   displayName: Target
   damage: 25
-  speed: 10
+  speed: 15
   fireRate: 3
   shotsPerPickup: 9
   splashRadius: 2

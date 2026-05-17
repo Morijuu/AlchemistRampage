@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bulletType: 7
   displayName: Chain
-  damage: 25
-  speed: 10
+  damage: 15
+  speed: 20
   fireRate: 3
   shotsPerPickup: 9
   splashRadius: 2
