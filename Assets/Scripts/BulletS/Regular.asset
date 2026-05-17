@@ -17,7 +17,7 @@ MonoBehaviour:
   damage: 10
   speed: 30
   fireRate: 5
-  shotsPerPickup: 15
+  shotsPerPickup: 12
   splashRadius: 2
   splashDamage: 10
   areaDuration: 4

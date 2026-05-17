@@ -480,6 +480,9 @@ MonoBehaviour:
   speed: 7.5
   detectionRange: 7
   loseRange: 100
+  wallLayer:
+    serializedVersion: 2
+    m_Bits: 128
   wanderSpeed: 2
   wanderChangeInterval: 4
   animator: {fileID: 3811923219576325637}

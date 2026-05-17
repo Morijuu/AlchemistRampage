@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 9003728739716002792}
   - component: {fileID: 2199822260030682014}
   - component: {fileID: 6588353166506823930}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: PickUp
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -148,9 +148,9 @@ GameObject:
   - component: {fileID: 5635733992782490488}
   - component: {fileID: 8420663839261636404}
   - component: {fileID: 5715675454154351923}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: BulletPickup_Bouncy
-  m_TagString: Untagged
+  m_TagString: Pickup
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -261,7 +261,7 @@ CircleCollider2D:
   m_CompositeOperation: 0
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
-  m_Radius: 10
+  m_Radius: 30
 --- !u!114 &5715675454154351923
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -289,7 +289,7 @@ GameObject:
   - component: {fileID: 5793832589820787901}
   - component: {fileID: 4873229377390784876}
   - component: {fileID: 8235229287496699655}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Merge
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -426,7 +426,7 @@ GameObject:
   - component: {fileID: 5785724237326414956}
   - component: {fileID: 5616437994307368558}
   - component: {fileID: 5322564849506322372}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}

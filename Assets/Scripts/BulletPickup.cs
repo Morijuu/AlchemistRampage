@@ -91,7 +91,8 @@ public class BulletPickup : MonoBehaviour
 
     private void OnFusionar()
     {
-        BulletInventory.Instance.FuseBullet(pendingFusion);
+        // NUEVO: Ahora le pasamos la bala que estamos recogiendo (bulletType) para sumar su cantidad
+        BulletInventory.Instance.FuseBullet(pendingFusion, bulletType);
         Destroy(gameObject);
     }
 }

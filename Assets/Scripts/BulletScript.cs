@@ -55,6 +55,10 @@ public class BulletScript : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (data == null) return;
+        
+        // --- NUEVO: Ignorar colisión con los objetos recogibles del suelo ---
+        if (other.CompareTag("Pickup")) return;
+
         if (!isEnemyBullet && other.CompareTag("Player")) return;
         if (isEnemyBullet && other.CompareTag("Enemy")) return;
 
@@ -102,6 +106,10 @@ public class BulletScript : MonoBehaviour
         foreach (RaycastHit2D hit in hits)
         {
             if (hit.collider == ownCollider) continue;
+            
+            // --- NUEVO: Ignorar colisión con los objetos recogibles en el raycast de la Bouncy Bullet ---
+            if (hit.collider.CompareTag("Pickup")) continue;
+
             if (!isEnemyBullet && hit.collider.CompareTag("Player")) continue;
             if (isEnemyBullet && hit.collider.CompareTag("Enemy")) continue;
 

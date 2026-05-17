@@ -15699,7 +15699,7 @@ GameObject:
   m_Component:
   - component: {fileID: 577933919}
   - component: {fileID: 577933918}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: walls
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -19880,7 +19880,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 755892989}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: -0}
   m_LocalScale: {x: 2.6849961, y: 2.6849961, z: 2.6849961}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -19888,8 +19888,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 434, y: -96}
-  m_SizeDelta: {x: 200, y: 50}
+  m_AnchoredPosition: {x: 338, y: -40.676}
+  m_SizeDelta: {x: 46.1212, y: 14.5868}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &755892991
 MonoBehaviour:
@@ -27812,7 +27812,7 @@ GameObject:
   - component: {fileID: 1093917603}
   - component: {fileID: 1093917602}
   - component: {fileID: 1093917601}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Walls
   m_TagString: Untagged
   m_Icon: {fileID: 0}

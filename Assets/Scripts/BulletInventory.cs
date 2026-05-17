@@ -31,16 +31,33 @@ public class BulletInventory : MonoBehaviour
     {
         BulletData data = GetDataForType(type);
         if (data == null) return;
-        activeData = data;
-        shotCount = data.shotsPerPickup;
+
+        // NUEVO: Si recoges una bala del mismo tipo que ya tienes, sumamos la munición
+        if (activeData != null && activeData.bulletType == type)
+        {
+            shotCount += data.shotsPerPickup;
+        }
+        else
+        {
+            // Si recoges un tipo distinto (y pulsas E en vez de F para fusionar), se reemplaza
+            activeData = data;
+            shotCount = data.shotsPerPickup;
+        }
     }
 
-    public void FuseBullet(BulletType fusedType)
+    // NUEVO: Ahora pedimos el tipo de bala que recoges (incomingType) para saber cuántas sumar
+    public void FuseBullet(BulletType fusedType, BulletType incomingType)
     {
-        BulletData data = GetDataForType(fusedType);
-        if (data == null) return;
-        activeData = data;
-        shotCount = data.shotsPerPickup;
+        BulletData fusedData = GetDataForType(fusedType);
+        BulletData incomingData = GetDataForType(incomingType);
+
+        if (fusedData == null || incomingData == null) return;
+
+        // Sumamos: Tus balas actuales + las balas que te da el pickup del suelo
+        shotCount += incomingData.shotsPerPickup;
+        
+        // Cambiamos tu tipo de bala al nuevo tipo fusionado
+        activeData = fusedData;
     }
 
     public bool TryConsumeBullet()
