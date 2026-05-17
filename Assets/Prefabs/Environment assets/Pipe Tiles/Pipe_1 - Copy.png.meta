@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: f014df03f5e8acf41ae6d93f78b2d498
+guid: 80de9044577aadd45871b32e151d9ac9
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 708365039128658682
-    second: Suelo 1_0
+      213: 8196068428654218591
+    second: Pipe_1 - Copy_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -51,7 +51,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 100
+  spritePixelsToUnits: 64
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -100,13 +100,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Suelo 1_0
+      name: Pipe_1 - Copy_0
       rect:
         serializedVersion: 2
         x: 0
-        y: 0
-        width: 1080
-        height: 1920
+        y: 13
+        width: 64
+        height: 38
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: af2c190004e94d900800000000000000
-      internalID: 708365039128658682
+      spriteID: f5d8abcafc84eb170800000000000000
+      internalID: 8196068428654218591
       vertices: []
       indices: 
       edges: []
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Suelo 1_0: 708365039128658682
+      Pipe_1 - Copy_0: 8196068428654218591
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
