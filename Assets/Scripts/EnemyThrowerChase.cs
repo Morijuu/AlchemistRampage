@@ -7,6 +7,10 @@ public class EnemyThrowerChase : MonoBehaviour
     public float loseRange = 10f;
     public float shootRange = 5f;
 
+    // 🔽 NUEVO: Capa para detectar las paredes
+    [Header("Vision")]
+    public LayerMask wallLayer;
+
     public GameObject projectilePrefab;
     public float shootCooldown = 2f;
     public float projectileSpeed = 6f;
@@ -41,9 +45,19 @@ public class EnemyThrowerChase : MonoBehaviour
 
         float distance = Vector2.Distance(transform.position, player.position);
 
-        if (state == State.Wandering && distance <= detectionRange)
+        // --- 🔽 NUEVO: Comprobar línea de visión ---
+        bool hasLineOfSight = false;
+        if (distance <= loseRange)
+        {
+            Vector2 directionToPlayer = (player.position - transform.position).normalized;
+            RaycastHit2D hitWall = Physics2D.Raycast(transform.position, directionToPlayer, distance, wallLayer);
+            hasLineOfSight = (hitWall.collider == null);
+        }
+
+        // --- 🔽 MODIFICADO: Pasa a Wandering si te alejas O si te escondes detrás de un muro ---
+        if (state == State.Wandering && distance <= detectionRange && hasLineOfSight)
             state = State.Chasing;
-        else if (state == State.Chasing && distance > loseRange)
+        else if (state == State.Chasing && (distance > loseRange || !hasLineOfSight))
             state = State.Wandering;
 
         if (state == State.Chasing)
@@ -57,8 +71,12 @@ public class EnemyThrowerChase : MonoBehaviour
         }
 
         if (attackAnimTimer > 0) attackAnimTimer -= Time.fixedDeltaTime;
-        animator?.SetBool("isWalking", rb.linearVelocity.magnitude > 0f);
-        animator?.SetBool("isAttacking", attackAnimTimer > 0);
+        
+        if (animator != null)
+        {
+            animator.SetBool("isWalking", rb.linearVelocity.magnitude > 0f);
+            animator.SetBool("isAttacking", attackAnimTimer > 0);
+        }
 
         Vector2 lookDir = state == State.Chasing
             ? (Vector2)(player.position - transform.position)
@@ -77,9 +95,17 @@ public class EnemyThrowerChase : MonoBehaviour
 
         if (distance <= shootRange && shootTimer >= shootCooldown)
         {
-            Shoot();
-            attackAnimTimer = shootCooldown;
-            shootTimer = 0f;
+            // --- 🔽 NUEVO: Asegurarnos de que no hay pared antes de disparar ---
+            Vector2 directionToPlayer = (player.position - transform.position).normalized;
+            RaycastHit2D hitWall = Physics2D.Raycast(transform.position, directionToPlayer, distance, wallLayer);
+
+            // Si el rayo NO choca con la pared, entonces disparamos
+            if (hitWall.collider == null)
+            {
+                Shoot();
+                attackAnimTimer = shootCooldown;
+                shootTimer = 0f;
+            }
         }
     }
 

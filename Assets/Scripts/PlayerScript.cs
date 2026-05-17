@@ -37,7 +37,6 @@ public class PlayerScript : MonoBehaviour
 
     private GameObject weaponObject;
 
-    // 🔽 AÑADIDO (para no hacer GetComponent cada frame)
     private Health health;
 
     private void Awake()
@@ -47,17 +46,16 @@ public class PlayerScript : MonoBehaviour
         animator = GetComponentInChildren<Animator>();
         input = GetComponent<PlayerInput>();
 
-        // 🔽 AÑADIDO
         health = GetComponent<Health>();
     }
 
     private void OnTriggerEnter2D(Collider2D other)
-{
-    if (other.CompareTag("Flag"))
     {
-        UIManager.Instance.ShowWin();
+        if (other.CompareTag("Flag"))
+        {
+            UIManager.Instance.ShowWin();
+        }
     }
-}
 
     private void Start()
     {
@@ -82,7 +80,6 @@ public class PlayerScript : MonoBehaviour
 
     void FixedUpdate()
     {
-        // 🔽 MODIFICADO (ANTES anulabas la velocidad → ahora solo bloqueas input)
         if (health != null && health.IsKnocked())
         {
             return;
@@ -189,7 +186,11 @@ public class PlayerScript : MonoBehaviour
         Vector2 origin = bulletSpawn.position;
         Vector2 direction = directionMouse.normalized;
 
-        RaycastHit2D[] hits = Physics2D.RaycastAll(origin, direction, raycastMaxDistance);
+        // --- NUEVO: Creamos una máscara que incluya todo EXCEPTO la capa "PickupLayer" ---
+        int layerMask = ~LayerMask.GetMask("PickupLayer");
+
+        // --- MODIFICADO: Le pasamos la layerMask a la función RaycastAll ---
+        RaycastHit2D[] hits = Physics2D.RaycastAll(origin, direction, raycastMaxDistance, layerMask);
         System.Array.Sort(hits, (a, b) => a.distance.CompareTo(b.distance));
 
         Vector2 endPoint = origin + direction * raycastMaxDistance;
@@ -201,7 +202,7 @@ public class PlayerScript : MonoBehaviour
             endPoint = hit.point;
             Health health = hit.collider.GetComponent<Health>();
             if (health != null)
-                health.TakeDamage(data.damage, transform); // 🔽 MODIFICADO (para knockback correcto)
+                health.TakeDamage(data.damage, transform);
             break;
         }
 

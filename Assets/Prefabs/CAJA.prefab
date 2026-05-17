@@ -184,6 +184,6 @@ MonoBehaviour:
   isPlayer: 0
   bulletPickupPrefabs: []
   dropsPickup: 1
-  dropChance: 0.364
+  dropChance: 0
   heartPrefab: {fileID: 4172070467584808533, guid: 58c5ff23aa22d664c8e7872d435a053e, type: 3}
-  heartDropChance: 0.369
+  heartDropChance: 0.344
