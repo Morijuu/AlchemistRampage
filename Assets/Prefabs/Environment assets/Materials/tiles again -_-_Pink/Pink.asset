@@ -136,9 +136,9 @@ MonoBehaviour:
     />\n  <presetinput identifier=\"$randomseed\" uid=\"3041239426\" type=\"4\" value=\"9708\"
     />\n  <presetinput identifier=\"x_amount\" uid=\"2238897785\" type=\"4\" value=\"12\"
     />\n  <presetinput identifier=\"y_amount\" uid=\"2238896733\" type=\"4\" value=\"12\"
-    />\n  <presetinput identifier=\"hue\" uid=\"2238895860\" type=\"0\" value=\"0.881\"
-    />\n  <presetinput identifier=\"saturation\" uid=\"2238895862\" type=\"0\" value=\"0.173\"
-    />\n  <presetinput identifier=\"luminosity\" uid=\"2238895864\" type=\"0\" value=\"0.582\"
+    />\n  <presetinput identifier=\"hue\" uid=\"2238895860\" type=\"0\" value=\"0.395\"
+    />\n  <presetinput identifier=\"saturation\" uid=\"2238895862\" type=\"0\" value=\"0.46\"
+    />\n  <presetinput identifier=\"luminosity\" uid=\"2238895864\" type=\"0\" value=\"0.59\"
     />\n  <presetinput identifier=\"outputcolor\" uid=\"2238895894\" type=\"3\" value=\"0.558799,0.641509,0.562175,1\"
     />\n  <presetinput identifier=\"outputcolor_1\" uid=\"2238895881\" type=\"3\"
     value=\"0.331824,0.254717,1,1\" />\n  <presetinput identifier=\"balance_1\" uid=\"2238895407\"
@@ -291,7 +291,7 @@ MonoBehaviour:
           GuiDescription: 
           Type: 0
           WidgetType: 1
-        Data: 0.881
+        Data: 0.395
         NumericalDescription:
           DefaultValue: 0.5
           MinValue: 0
@@ -311,7 +311,7 @@ MonoBehaviour:
           GuiDescription: 
           Type: 0
           WidgetType: 1
-        Data: 0.173
+        Data: 0.46
         NumericalDescription:
           DefaultValue: 0.5
           MinValue: 0
@@ -331,7 +331,7 @@ MonoBehaviour:
           GuiDescription: 
           Type: 0
           WidgetType: 1
-        Data: 0.582
+        Data: 0.59
         NumericalDescription:
           DefaultValue: 0.5
           MinValue: 0
