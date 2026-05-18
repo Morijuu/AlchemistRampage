@@ -1,16 +1,16 @@
 fileFormatVersion: 2
-guid: c8c32da60f74e7f4a9e81765d1065e34
+guid: f70f6cbca6272a447a412844c91fa5d6
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 3663007245242304535
-    second: planks_basecolor_0
+      213: 4779026093280170565
+    second: planks 1_metallic_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
     mipMapMode: 0
     enableMipMap: 1
-    sRGBTexture: 1
+    sRGBTexture: 0
     linearTexture: 0
     fadeOut: 0
     borderMipMap: 0
@@ -40,9 +40,9 @@ TextureImporter:
     filterMode: 1
     aniso: 1
     mipBias: 0
-    wrapU: 0
-    wrapV: 0
-    wrapW: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
@@ -100,7 +100,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: planks_basecolor_0
+      name: planks 1_metallic_0
       rect:
         serializedVersion: 2
         x: 0
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 718895e9ead95d230800000000000000
-      internalID: 3663007245242304535
+      spriteID: 542994659e2825240800000000000000
+      internalID: 4779026093280170565
       vertices: []
       indices: 
       edges: []
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      planks_basecolor_0: 3663007245242304535
+      planks 1_metallic_0: 4779026093280170565
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

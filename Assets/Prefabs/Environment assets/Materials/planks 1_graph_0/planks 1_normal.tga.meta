@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: a23305e1cfa82064889c37ed173fa1fb
+guid: 5dcaf71da46c0de4089d8c94d4adb952
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -3590938033451069762
-    second: tiles again -_-_metallic_0
+      213: 7682407749454749477
+    second: planks 1_normal_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -55,9 +55,9 @@ TextureImporter:
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
-  alphaIsTransparency: 1
+  alphaIsTransparency: 0
   spriteTessellationDetail: -1
-  textureType: 8
+  textureType: 1
   textureShape: 1
   singleChannelComponent: 0
   flipbookRows: 1
@@ -74,7 +74,7 @@ TextureImporter:
     buildTarget: DefaultTexturePlatform
     maxTextureSize: 4096
     resizeAlgorithm: 0
-    textureFormat: 4
+    textureFormat: -1
     textureCompression: 0
     compressionQuality: 50
     crunchedCompression: 0
@@ -100,7 +100,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: tiles again -_-_metallic_0
+      name: planks 1_normal_0
       rect:
         serializedVersion: 2
         x: 0
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: ebe85b952ec6a2ec0800000000000000
-      internalID: -3590938033451069762
+      spriteID: 52f55fd15256d9a60800000000000000
+      internalID: 7682407749454749477
       vertices: []
       indices: 
       edges: []
@@ -134,8 +134,7 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable:
-      tiles again -_-_metallic_0: -3590938033451069762
+    nameFileIdTable: {}
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

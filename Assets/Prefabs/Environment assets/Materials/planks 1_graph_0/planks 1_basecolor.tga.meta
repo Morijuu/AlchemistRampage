@@ -1,16 +1,16 @@
 fileFormatVersion: 2
-guid: f35aafa2aaaeb874aa453fb0859a9a91
+guid: 31f670622b9d28045a9db3211089ac7f
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -1312958762980960219
-    second: planks_ambientocclusion_0
+      213: 2195368768796290431
+    second: planks 1_basecolor_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
     mipMapMode: 0
     enableMipMap: 1
-    sRGBTexture: 0
+    sRGBTexture: 1
     linearTexture: 0
     fadeOut: 0
     borderMipMap: 0
@@ -40,9 +40,9 @@ TextureImporter:
     filterMode: 1
     aniso: 1
     mipBias: 0
-    wrapU: 0
-    wrapV: 0
-    wrapW: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
@@ -100,7 +100,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: planks_ambientocclusion_0
+      name: planks 1_basecolor_0
       rect:
         serializedVersion: 2
         x: 0
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 52898cf16fe67cde0800000000000000
-      internalID: -1312958762980960219
+      spriteID: f7de61f7344877e10800000000000000
+      internalID: 2195368768796290431
       vertices: []
       indices: 
       edges: []
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      planks_ambientocclusion_0: -1312958762980960219
+      planks 1_basecolor_0: 2195368768796290431
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
