@@ -20,16 +20,16 @@ MonoBehaviour:
   GUID: 59253c1c-f96d-4ca1-93cd-0ee058165d62
   Index: 0
   Input:
-  - rid: 7892295664480288968
-  - rid: 7892295664480288969
-  - rid: 7892295664480288970
-  - rid: 7892295664480288971
-  - rid: 7892295664480288972
-  - rid: 7892295664480288973
-  - rid: 7892295664480288974
-  - rid: 7892295664480288975
-  - rid: 7892295664480288976
-  - rid: 7892295664480288977
+  - rid: 7892295984028581898
+  - rid: 7892295984028581899
+  - rid: 7892295984028581900
+  - rid: 7892295984028581901
+  - rid: 7892295984028581902
+  - rid: 7892295984028581903
+  - rid: 7892295984028581904
+  - rid: 7892295984028581905
+  - rid: 7892295984028581906
+  - rid: 7892295984028581907
   Output:
   - Index: 0
     VirtualOutputIndex: 6
@@ -39,7 +39,7 @@ MonoBehaviour:
       Index: 0
       Type: 8
       Channel: baseColor
-    OutputTexture: {fileID: 0}
+    OutputTexture: {fileID: 2800000, guid: 1187be67fcfe1cd499051638259480a7, type: 3}
     sRGB: 1
     IsVirtual: 0
     IsAlphaAssignable: 1
@@ -55,7 +55,7 @@ MonoBehaviour:
       Index: 1
       Type: 8
       Channel: normal
-    OutputTexture: {fileID: 0}
+    OutputTexture: {fileID: 2800000, guid: afe111ab91a54374b9d0cab68d29bf10, type: 3}
     sRGB: 0
     IsVirtual: 0
     IsAlphaAssignable: 0
@@ -71,7 +71,7 @@ MonoBehaviour:
       Index: 2
       Type: 8
       Channel: roughness
-    OutputTexture: {fileID: 0}
+    OutputTexture: {fileID: 2800000, guid: 6c98b44de15f3924fa214a31ee25de44, type: 3}
     sRGB: 0
     IsVirtual: 0
     IsAlphaAssignable: 1
@@ -87,7 +87,7 @@ MonoBehaviour:
       Index: 3
       Type: 8
       Channel: metallic
-    OutputTexture: {fileID: 0}
+    OutputTexture: {fileID: 2800000, guid: a23305e1cfa82064889c37ed173fa1fb, type: 3}
     sRGB: 0
     IsVirtual: 0
     IsAlphaAssignable: 1
@@ -103,7 +103,7 @@ MonoBehaviour:
       Index: 4
       Type: 8
       Channel: height
-    OutputTexture: {fileID: 0}
+    OutputTexture: {fileID: 2800000, guid: c3dbd0e6b89af624faa0db25e465d65e, type: 3}
     sRGB: 1
     IsVirtual: 0
     IsAlphaAssignable: 1
@@ -119,7 +119,7 @@ MonoBehaviour:
       Index: 5
       Type: 8
       Channel: ambientOcclusion
-    OutputTexture: {fileID: 0}
+    OutputTexture: {fileID: 2800000, guid: d931f1d3601c841479269d253afa5bd2, type: 3}
     sRGB: 0
     IsVirtual: 0
     IsAlphaAssignable: 1
@@ -137,7 +137,7 @@ MonoBehaviour:
     />\n  <presetinput identifier=\"y_amount\" uid=\"2238896733\" type=\"4\" value=\"20\"
     />\n </sbspreset>\n"
   IsRuntimeOnly: 0
-  GenerateAllOutputs: 0
+  GenerateAllOutputs: 1
   GenerateAllMipmaps: 1
   OutputMaterial: {fileID: 2100000, guid: 4eb8c1c3f078bd54193e7e31febc3f55, type: 2}
   DefaultPreset: " <sbspreset pkgurl=\"pkg://Substance_graph\" label=\"\" >\n  <presetinput
@@ -164,7 +164,7 @@ MonoBehaviour:
   references:
     version: 2
     RefIds:
-    - rid: 7892295664480288968
+    - rid: 7892295984028581898
       type: {class: SubstanceInputInt2, ns: Adobe.Substance.Input, asm: Adobe.Substance}
       data:
         Index: 0
@@ -183,7 +183,7 @@ MonoBehaviour:
           SliderClamp: 0
           EnumValueCount: 0
           EnumValues: []
-    - rid: 7892295664480288969
+    - rid: 7892295984028581899
       type: {class: SubstanceInputInt, ns: Adobe.Substance.Input, asm: Adobe.Substance}
       data:
         Index: 1
@@ -205,7 +205,7 @@ MonoBehaviour:
           LabelTrue: 
           EnumValueCount: 0
           EnumValues: []
-    - rid: 7892295664480288970
+    - rid: 7892295984028581900
       type: {class: SubstanceInputInt, ns: Adobe.Substance.Input, asm: Adobe.Substance}
       data:
         Index: 2
@@ -216,7 +216,7 @@ MonoBehaviour:
           GuiDescription: Amount of patterns on the X axis.
           Type: 4
           WidgetType: 1
-        Data: 20
+        Data: 10
         NumericalDescription:
           DefaultValue: 10
           MinValue: 1
@@ -227,7 +227,7 @@ MonoBehaviour:
           LabelTrue: 
           EnumValueCount: 0
           EnumValues: []
-    - rid: 7892295664480288971
+    - rid: 7892295984028581901
       type: {class: SubstanceInputInt, ns: Adobe.Substance.Input, asm: Adobe.Substance}
       data:
         Index: 3
@@ -238,7 +238,7 @@ MonoBehaviour:
           GuiDescription: Amount of patterns on the Y axis.
           Type: 4
           WidgetType: 1
-        Data: 20
+        Data: 10
         NumericalDescription:
           DefaultValue: 10
           MinValue: 1
@@ -249,7 +249,7 @@ MonoBehaviour:
           LabelTrue: 
           EnumValueCount: 0
           EnumValues: []
-    - rid: 7892295664480288972
+    - rid: 7892295984028581902
       type: {class: SubstanceInputFloat, ns: Adobe.Substance.Input, asm: Adobe.Substance}
       data:
         Index: 4
@@ -269,7 +269,7 @@ MonoBehaviour:
           SliderClamp: 0
           EnumValueCount: 0
           EnumValues: []
-    - rid: 7892295664480288973
+    - rid: 7892295984028581903
       type: {class: SubstanceInputFloat, ns: Adobe.Substance.Input, asm: Adobe.Substance}
       data:
         Index: 5
@@ -289,7 +289,7 @@ MonoBehaviour:
           SliderClamp: 0
           EnumValueCount: 0
           EnumValues: []
-    - rid: 7892295664480288974
+    - rid: 7892295984028581904
       type: {class: SubstanceInputFloat, ns: Adobe.Substance.Input, asm: Adobe.Substance}
       data:
         Index: 6
@@ -309,7 +309,7 @@ MonoBehaviour:
           SliderClamp: 0
           EnumValueCount: 0
           EnumValues: []
-    - rid: 7892295664480288975
+    - rid: 7892295984028581905
       type: {class: SubstanceInputFloat4, ns: Adobe.Substance.Input, asm: Adobe.Substance}
       data:
         Index: 7
@@ -330,7 +330,7 @@ MonoBehaviour:
           SliderClamp: 0
           EnumValueCount: 0
           EnumValues: []
-    - rid: 7892295664480288976
+    - rid: 7892295984028581906
       type: {class: SubstanceInputFloat4, ns: Adobe.Substance.Input, asm: Adobe.Substance}
       data:
         Index: 8
@@ -351,7 +351,7 @@ MonoBehaviour:
           SliderClamp: 0
           EnumValueCount: 0
           EnumValues: []
-    - rid: 7892295664480288977
+    - rid: 7892295984028581907
       type: {class: SubstanceInputFloat, ns: Adobe.Substance.Input, asm: Adobe.Substance}
       data:
         Index: 9

@@ -134,7 +134,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      gear_wheel_0: -6504615761324273308
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
