@@ -15,7 +15,7 @@ MonoBehaviour:
   bulletType: 3
   displayName: Bouncy
   damage: 15
-  speed: 30
+  speed: 40
   fireRate: 3
   shotsPerPickup: 8
   splashRadius: 2

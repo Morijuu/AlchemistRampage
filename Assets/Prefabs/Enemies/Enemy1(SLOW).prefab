@@ -442,6 +442,8 @@ MonoBehaviour:
   knockbackDistance: 0.5
   playerKnockbackForce: 8
   playerKnockbackTime: 0.2
+  sr: {fileID: 8911192809146325389}
+  flashDuration: 0.14
   isPlayer: 0
   bulletPickupPrefabs:
   - {fileID: 5406239416059164170, guid: ca7b9d96ef91f1f49975922fb9772513, type: 3}

@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bulletType: 2
   displayName: Heavy
-  damage: 40
-  speed: 20
+  damage: 30
+  speed: 30
   fireRate: 0.8
   shotsPerPickup: 8
   splashRadius: 2

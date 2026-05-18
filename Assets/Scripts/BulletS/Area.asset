@@ -15,7 +15,7 @@ MonoBehaviour:
   bulletType: 4
   displayName: Area
   damage: 30
-  speed: 8
+  speed: 25
   fireRate: 3
   shotsPerPickup: 7
   splashRadius: 2

@@ -7425,13 +7425,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 171904173}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0.707107, w: 0.70710665}
+  m_LocalRotation: {x: -0.7071068, y: 0.7071068, z: -0, w: 0}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.2883, y: 0.2883, z: 0.2883}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 672960761}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: -90}
+  m_LocalEulerAnglesHint: {x: 0, y: 180, z: -90}
 --- !u!212 &171904175
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -7475,13 +7475,13 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 20000
-  m_Sprite: {fileID: -1337084205146215169, guid: 3908d28e9ed59614ca406776a4afc3ab, type: 3}
+  m_SortingOrder: 1
+  m_Sprite: {fileID: 4723107735738678597, guid: ebf312b22212c834583471e4ff094646, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 8, y: 7.01}
+  m_Size: {x: 4.05, y: 3.58}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -21435,6 +21435,8 @@ MonoBehaviour:
   knockbackDistance: 0.5
   playerKnockbackForce: 8
   playerKnockbackTime: 0.2
+  sr: {fileID: 0}
+  flashDuration: 0.12
   isPlayer: 1
   bulletPickupPrefabs: []
   dropsPickup: 0
@@ -21457,9 +21459,11 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 48bc877515116374a9221f55f4cdbc54, type: 2}
   - {fileID: 11400000, guid: 5ecee9f159741c54d876cea2916c3a21, type: 2}
   - {fileID: 11400000, guid: 304a8822c496bc94fb41070a78282c89, type: 2}
-  - {fileID: 11400000, guid: cd2d7372399bbe84698afc811eeda552, type: 2}
-  - {fileID: 11400000, guid: 29a375c794b574b41a9d88e7643f14f9, type: 2}
   - {fileID: 11400000, guid: 8d7926b8cc3f720418bc7192ffebb6f8, type: 2}
+  - {fileID: 11400000, guid: 29a375c794b574b41a9d88e7643f14f9, type: 2}
+  - {fileID: 11400000, guid: 41c060910d031224bbd9c0b504787bc9, type: 2}
+  - {fileID: 11400000, guid: dde3d691897dbe249b9af934fea97770, type: 2}
+  - {fileID: 11400000, guid: cd2d7372399bbe84698afc811eeda552, type: 2}
   bulletPrefab: {fileID: 281633708342098927, guid: fc0123ee7356cc6498cb4e2aecb37290, type: 3}
   activeData: {fileID: 0}
   shotCount: 0
@@ -75237,11 +75241,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5355685923730992910, guid: ca7b9d96ef91f1f49975922fb9772513, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -316.18237
+      value: -315.49
       objectReference: {fileID: 0}
     - target: {fileID: 5355685923730992910, guid: ca7b9d96ef91f1f49975922fb9772513, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -219.3919
+      value: -218.73
       objectReference: {fileID: 0}
     - target: {fileID: 5355685923730992910, guid: ca7b9d96ef91f1f49975922fb9772513, type: 3}
       propertyPath: m_LocalPosition.z
