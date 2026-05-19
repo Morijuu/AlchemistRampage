@@ -79,7 +79,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 4584626795143022266, guid: 96fc491a3649d594ba52859d7a83ac91, type: 3}
+  m_Sprite: {fileID: -8087352140796787637, guid: a8312e2403713184f8981945cae6a55c, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -155,7 +155,7 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 3.7, y: 3.67}
+    oldSize: {x: 5.52, y: 5.52}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -181,6 +181,8 @@ MonoBehaviour:
   knockbackDistance: 0.5
   playerKnockbackForce: 8
   playerKnockbackTime: 0.2
+  sr: {fileID: 0}
+  flashDuration: 0.12
   isPlayer: 0
   bulletPickupPrefabs: []
   dropsPickup: 1

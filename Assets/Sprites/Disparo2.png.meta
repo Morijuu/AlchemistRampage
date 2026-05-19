@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: a47a191a5be51554fbf5a3d00896460f
+guid: 596e642f90c260e49b317c2ec4f12d6a
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 7698215444405320562
-    second: smoke_particle_72x72_0
+      213: 1094186520655918529
+    second: Disparo2_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,13 +100,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: smoke_particle_72x72_0
+      name: Disparo2_0
       rect:
         serializedVersion: 2
-        x: 27
-        y: 25
-        width: 282
-        height: 283
+        x: 314
+        y: 423
+        width: 994
+        height: 944
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 27b7438e82e85da60800000000000000
-      internalID: 7698215444405320562
+      spriteID: 1c577b1e7d45f2f00800000000000000
+      internalID: 1094186520655918529
       vertices: []
       indices: 
       edges: []
@@ -134,8 +134,7 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable:
-      smoke_particle_72x72_0: 7698215444405320562
+    nameFileIdTable: {}
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

@@ -17,6 +17,13 @@ public class BulletScript : MonoBehaviour
     private Vector2 previousPosition;
     private Collider2D ownCollider;
 
+    [Header("Explosion")]
+    public Sprite explosionSprite;
+    public float explosionTime = 1f;
+
+    private SpriteRenderer spriteRenderer;
+    private bool exploded = false;
+
     public void Initialize(BulletData bulletData, bool enemyBullet = false, bool fragment = false)
     {
         data = bulletData;
@@ -40,23 +47,27 @@ public class BulletScript : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         previousPosition = rb.position;
+
+        spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
     private void FixedUpdate()
     {
-        if (data == null) return;
+        if (data == null || exploded) return;
+
         if (data.bulletType == BulletType.Target)
             SteerTowardTarget();
+
         if (data.bulletType == BulletType.Bouncy)
             CheckBouncyRaycast();
+
         previousPosition = rb.position;
     }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (data == null) return;
-        
-        // --- NUEVO: Ignorar colisión con los objetos recogibles del suelo ---
+        if (data == null || exploded) return;
+
         if (other.CompareTag("Pickup")) return;
 
         if (!isEnemyBullet && other.CompareTag("Player")) return;
@@ -71,13 +82,16 @@ public class BulletScript : MonoBehaviour
             if (health != null)
             {
                 health.TakeDamage(data.damage, transform);
+
                 pierceCount++;
+
                 if (pierceCount >= data.maxPierceCount)
-                    Destroy(gameObject);
+                    Explode();
+
                 return;
             }
-            // Pared u obstáculo
-            Destroy(gameObject);
+
+            Explode();
             return;
         }
 
@@ -85,44 +99,80 @@ public class BulletScript : MonoBehaviour
         {
             health.TakeDamage(data.damage, transform);
             HandleHitEffect(transform.position, other);
-            Destroy(gameObject);
+
+            Explode();
             return;
         }
 
-        // Pared u obstáculo sin Health
         HandleHitEffect(transform.position, null);
-        Destroy(gameObject);
+        Explode();
+    }
+
+    private void Explode()
+    {
+        if (exploded) return;
+
+        exploded = true;
+
+        if (spriteRenderer != null && explosionSprite != null)
+            spriteRenderer.sprite = explosionSprite;
+
+        if (rb != null)
+            rb.linearVelocity = Vector2.zero;
+
+        Collider2D col = GetComponent<Collider2D>();
+        if (col != null)
+            col.enabled = false;
+
+        Destroy(gameObject, explosionTime);
     }
 
     private void CheckBouncyRaycast()
     {
         Vector2 movement = rb.position - previousPosition;
         float distance = movement.magnitude;
+
         if (distance < 0.001f) return;
 
-        RaycastHit2D[] hits = Physics2D.RaycastAll(previousPosition, movement.normalized, distance + 0.1f);
+        RaycastHit2D[] hits = Physics2D.RaycastAll(
+            previousPosition,
+            movement.normalized,
+            distance + 0.1f
+        );
+
         System.Array.Sort(hits, (a, b) => a.distance.CompareTo(b.distance));
 
         foreach (RaycastHit2D hit in hits)
         {
             if (hit.collider == ownCollider) continue;
-            
-            // --- NUEVO: Ignorar colisión con los objetos recogibles en el raycast de la Bouncy Bullet ---
+
             if (hit.collider.CompareTag("Pickup")) continue;
 
             if (!isEnemyBullet && hit.collider.CompareTag("Player")) continue;
             if (isEnemyBullet && hit.collider.CompareTag("Enemy")) continue;
 
             Health health = hit.collider.GetComponent<Health>();
+
             if (health != null)
                 health.TakeDamage(data.damage, transform);
 
             bounceCount++;
-            if (bounceCount >= 3) { Destroy(gameObject); return; }
 
-            rb.linearVelocity = Vector2.Reflect(rb.linearVelocity, hit.normal);
+            if (bounceCount >= 3)
+            {
+                Explode();
+                return;
+            }
+
+            rb.linearVelocity = Vector2.Reflect(
+                rb.linearVelocity,
+                hit.normal
+            );
+
             rb.position = hit.point + hit.normal * 0.05f;
+
             previousPosition = rb.position;
+
             return;
         }
     }
@@ -130,133 +180,235 @@ public class BulletScript : MonoBehaviour
     private void HandleHitEffect(Vector3 hitPosition, Collider2D hitCollider)
     {
         if (data == null) return;
+
         switch (data.bulletType)
         {
             case BulletType.Area:
                 DoSplash(hitPosition);
                 break;
+
             case BulletType.Frag:
-                if (!isFragment) DoFrag(hitPosition, hitCollider);
+                if (!isFragment)
+                    DoFrag(hitPosition, hitCollider);
                 break;
+
             case BulletType.Chain:
-                if (!isFragment) DoChain(hitPosition, hitCollider);
+                if (!isFragment)
+                    DoChain(hitPosition, hitCollider);
                 break;
         }
     }
 
     private void DoSplash(Vector3 center)
     {
-        if (data.areaEffectPrefab == null)
-        {
-            Debug.LogWarning("Area bullet: areaEffectPrefab no asignado en BulletData.");
-            return;
-        }
+        if (data.areaEffectPrefab == null) return;
 
-        GameObject zone = Instantiate(data.areaEffectPrefab, center, Quaternion.identity);
+        GameObject zone = Instantiate(
+            data.areaEffectPrefab,
+            center,
+            Quaternion.identity
+        );
+
         AreaEffect effect = zone.GetComponent<AreaEffect>();
+
         if (effect != null)
-            effect.Initialize(data.splashDamage, data.areaTickRate, data.areaDuration, isEnemyBullet);
+        {
+            effect.Initialize(
+                data.splashDamage,
+                data.areaTickRate,
+                data.areaDuration,
+                isEnemyBullet
+            );
+        }
     }
 
     private void DoFrag(Vector3 origin, Collider2D ignoreCollider)
     {
         GameObject prefab = BulletInventory.Instance?.bulletPrefab;
+
         if (prefab == null) return;
 
         float angleStep = 360f / data.fragCount;
+
         for (int i = 0; i < data.fragCount; i++)
         {
             float angle = i * angleStep;
+
             Vector2 dir = new Vector2(
                 Mathf.Cos(angle * Mathf.Deg2Rad),
                 Mathf.Sin(angle * Mathf.Deg2Rad)
             );
 
-            // Spawn desplazado para no colisionar inmediatamente con el enemigo golpeado
             Vector3 spawnPos = origin + (Vector3)(dir * 0.4f);
 
-            GameObject frag = Instantiate(prefab, spawnPos, Quaternion.identity);
-            BulletScript fragScript = frag.GetComponent<BulletScript>();
-            fragScript.Initialize(data, isEnemyBullet, fragment: true);
+            GameObject frag = Instantiate(
+                prefab,
+                spawnPos,
+                Quaternion.identity
+            );
 
-            // Ignorar el collider golpeado para que los fragmentos no impacten inmediatamente
+            BulletScript fragScript = frag.GetComponent<BulletScript>();
+
+            fragScript.Initialize(
+                data,
+                isEnemyBullet,
+                fragment: true
+            );
+
             if (ignoreCollider != null)
             {
                 Collider2D fragCol = frag.GetComponent<Collider2D>();
+
                 if (fragCol != null)
-                    Physics2D.IgnoreCollision(fragCol, ignoreCollider);
+                    Physics2D.IgnoreCollision(
+                        fragCol,
+                        ignoreCollider
+                    );
             }
 
             Rigidbody2D fragRb = frag.GetComponent<Rigidbody2D>();
-            if (fragRb != null) fragRb.linearVelocity = dir * data.fragSpeed;
+
+            if (fragRb != null)
+                fragRb.linearVelocity = dir * data.fragSpeed;
         }
     }
 
     private void DoChain(Vector3 origin, Collider2D ignoreCollider)
     {
         GameObject prefab = BulletInventory.Instance?.bulletPrefab;
+
         if (prefab == null) return;
 
-        GameObject[] allEnemies = GameObject.FindGameObjectsWithTag("Enemy");
+        GameObject[] allEnemies =
+            GameObject.FindGameObjectsWithTag("Enemy");
+
         int spawned = 0;
 
         foreach (GameObject enemy in allEnemies)
         {
-            if (spawned >= data.chainCount) break;
+            if (spawned >= data.chainCount)
+                break;
 
-            Collider2D enemyCol = enemy.GetComponent<Collider2D>();
-            if (ignoreCollider != null && enemyCol == ignoreCollider) continue;
+            Collider2D enemyCol =
+                enemy.GetComponent<Collider2D>();
 
-            float dist = Vector2.Distance(origin, enemy.transform.position);
-            if (dist > data.chainRange) continue;
+            if (ignoreCollider != null &&
+                enemyCol == ignoreCollider)
+                continue;
 
-            Vector2 dir = ((Vector2)enemy.transform.position - (Vector2)origin).normalized;
-            GameObject chain = Instantiate(prefab, origin + (Vector3)(dir * 0.4f), Quaternion.identity);
-            BulletScript chainScript = chain.GetComponent<BulletScript>();
-            chainScript.Initialize(data, isEnemyBullet, fragment: true);
+            float dist = Vector2.Distance(
+                origin,
+                enemy.transform.position
+            );
 
-            Rigidbody2D chainRb = chain.GetComponent<Rigidbody2D>();
-            if (chainRb != null) chainRb.linearVelocity = dir * data.speed;
+            if (dist > data.chainRange)
+                continue;
+
+            Vector2 dir =
+                ((Vector2)enemy.transform.position -
+                (Vector2)origin).normalized;
+
+            GameObject chain = Instantiate(
+                prefab,
+                origin + (Vector3)(dir * 0.4f),
+                Quaternion.identity
+            );
+
+            BulletScript chainScript =
+                chain.GetComponent<BulletScript>();
+
+            chainScript.Initialize(
+                data,
+                isEnemyBullet,
+                fragment: true
+            );
+
+            Rigidbody2D chainRb =
+                chain.GetComponent<Rigidbody2D>();
+
+            if (chainRb != null)
+                chainRb.linearVelocity =
+                    dir * data.speed;
 
             spawned++;
         }
     }
 
-    // Target: curva hacia el enemigo pero con margen de error (no tracking perfecto)
     private void SteerTowardTarget()
     {
-        if (homingTarget == null) homingTarget = FindNearestEnemy();
+        if (homingTarget == null)
+            homingTarget = FindNearestEnemy();
+
         if (homingTarget == null) return;
 
-        // Vuela recto durante el delay inicial
-        if (Time.time - spawnTime < data.homingDelay) return;
+        if (Time.time - spawnTime <
+            data.homingDelay)
+            return;
 
-        float dist = Vector2.Distance(rb.position, homingTarget.position);
+        float dist = Vector2.Distance(
+            rb.position,
+            homingTarget.position
+        );
 
-        // Deja de corregir cuando está cerca — vuela recto y puede fallar
-        if (dist <= data.homingStopDistance) return;
+        if (dist <= data.homingStopDistance)
+            return;
 
-        Vector2 toTarget = ((Vector2)homingTarget.position - rb.position).normalized;
+        Vector2 toTarget =
+            ((Vector2)homingTarget.position -
+            rb.position).normalized;
 
-        float currentAngle = Mathf.Atan2(rb.linearVelocity.y, rb.linearVelocity.x) * Mathf.Rad2Deg;
-        float targetAngle  = Mathf.Atan2(toTarget.y, toTarget.x) * Mathf.Rad2Deg;
-        float newAngle     = Mathf.MoveTowardsAngle(currentAngle, targetAngle,
-                                                     data.homingTurnSpeed * Time.fixedDeltaTime)
-                             * Mathf.Deg2Rad;
+        float currentAngle =
+            Mathf.Atan2(
+                rb.linearVelocity.y,
+                rb.linearVelocity.x
+            ) * Mathf.Rad2Deg;
 
-        rb.linearVelocity = new Vector2(Mathf.Cos(newAngle), Mathf.Sin(newAngle)) * data.speed;
+        float targetAngle =
+            Mathf.Atan2(
+                toTarget.y,
+                toTarget.x
+            ) * Mathf.Rad2Deg;
+
+        float newAngle =
+            Mathf.MoveTowardsAngle(
+                currentAngle,
+                targetAngle,
+                data.homingTurnSpeed *
+                Time.fixedDeltaTime
+            ) * Mathf.Deg2Rad;
+
+        rb.linearVelocity =
+            new Vector2(
+                Mathf.Cos(newAngle),
+                Mathf.Sin(newAngle)
+            ) * data.speed;
     }
 
     private Transform FindNearestEnemy()
     {
-        GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
+        GameObject[] enemies =
+            GameObject.FindGameObjectsWithTag(
+                "Enemy"
+            );
+
         Transform nearest = null;
+
         float minDist = float.MaxValue;
+
         foreach (GameObject enemy in enemies)
         {
-            float dist = Vector2.Distance(transform.position, enemy.transform.position);
-            if (dist < minDist) { minDist = dist; nearest = enemy.transform; }
+            float dist = Vector2.Distance(
+                transform.position,
+                enemy.transform.position
+            );
+
+            if (dist < minDist)
+            {
+                minDist = dist;
+                nearest = enemy.transform;
+            }
         }
+
         return nearest;
     }
 }
