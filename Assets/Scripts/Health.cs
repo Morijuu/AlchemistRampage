@@ -14,7 +14,6 @@ public class Health : MonoBehaviour
     [SerializeField] private float playerKnockbackTime = 0.2f;
     private bool isKnocked = false;
 
-
     [Header("Hit Flash")]
     [SerializeField] private SpriteRenderer sr;
     [SerializeField] private float flashDuration = 0.12f;
@@ -34,13 +33,27 @@ public class Health : MonoBehaviour
     void Awake()
     {
         currentHealth = maxHealth;
-        if (sr != null) originalColor = sr.color;
+
+        if (sr != null)
+            originalColor = sr.color;
     }
 
     public void TakeDamage(int damage, Transform attacker)
     {
         currentHealth -= damage;
 
+        // AUDIO
+        if (isPlayer)
+        {
+            AudioManager.Instance?.PlayPlayerHit();
+        }
+        else
+        {
+            if (CompareTag("Enemy"))
+                AudioManager.Instance?.PlayZombieHit();
+        }
+
+        // LÓGICA ORIGINAL
         if (isPlayer)
             ApplyPlayerKnockback(attacker);
         else
@@ -48,8 +61,11 @@ public class Health : MonoBehaviour
 
         if (sr != null && !isPlayer)
         {
-            if (flashCoroutine != null) StopCoroutine(flashCoroutine);
-            flashCoroutine = StartCoroutine(DamageFlash());
+            if (flashCoroutine != null)
+                StopCoroutine(flashCoroutine);
+
+            flashCoroutine =
+                StartCoroutine(DamageFlash());
         }
 
         if (currentHealth <= 0)
@@ -59,46 +75,71 @@ public class Health : MonoBehaviour
     IEnumerator DamageFlash()
     {
         sr.color = new Color(1f, 0.2f, 0.2f, 0.7f);
+
         yield return new WaitForSeconds(flashDuration);
+
         sr.color = originalColor;
     }
-
 
     void ApplyKnockback(Transform attacker)
     {
         if (attacker == null) return;
 
-        Vector2 direction = (transform.position - attacker.position).normalized;
+        Vector2 direction =
+            (transform.position - attacker.position)
+            .normalized;
 
-        transform.position += (Vector3)(direction * knockbackDistance);
+        transform.position +=
+            (Vector3)(direction * knockbackDistance);
     }
 
     void ApplyPlayerKnockback(Transform attacker)
     {
-        Rigidbody2D rb = GetComponent<Rigidbody2D>();
-        if (rb == null || attacker == null) return;
+        Rigidbody2D rb =
+            GetComponent<Rigidbody2D>();
 
-        Vector2 direction = (transform.position - attacker.position).normalized;
+        if (
+            rb == null ||
+            attacker == null
+        )
+            return;
 
-        StartCoroutine(PlayerKnockbackCoroutine(rb, direction));
+        Vector2 direction =
+            (transform.position - attacker.position)
+            .normalized;
+
+        StartCoroutine(
+            PlayerKnockbackCoroutine(
+                rb,
+                direction
+            )
+        );
     }
 
-    IEnumerator PlayerKnockbackCoroutine(Rigidbody2D rb, Vector2 direction)
+    IEnumerator PlayerKnockbackCoroutine(
+        Rigidbody2D rb,
+        Vector2 direction
+    )
     {
-    isKnocked = true;
+        isKnocked = true;
 
-    float timer = 0f;
+        float timer = 0f;
 
-    while (timer < playerKnockbackTime)
-    {
-        rb.linearVelocity = direction * playerKnockbackForce;
-        timer += Time.deltaTime;
-        yield return null;
+        while (timer < playerKnockbackTime)
+        {
+            rb.linearVelocity =
+                direction *
+                playerKnockbackForce;
+
+            timer += Time.deltaTime;
+
+            yield return null;
+        }
+
+        isKnocked = false;
     }
 
-    isKnocked = false;
-}
-        public bool IsKnocked()
+    public bool IsKnocked()
     {
         return isKnocked;
     }
@@ -106,67 +147,155 @@ public class Health : MonoBehaviour
     public void Heal(int amount)
     {
         currentHealth += amount;
-        currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
+
+        currentHealth =
+            Mathf.Clamp(
+                currentHealth,
+                0,
+                maxHealth
+            );
+
+        // AUDIO CURACIÓN
+        AudioManager.Instance?.PlayHeal();
     }
+
     void Die()
     {
-        if (isPlayer)
+        // PLAYER
+// PLAYER
+if (isPlayer)
+{
+    AudioManager.Instance?.PlayPlayerDeath();
+
+    Debug.Log(
+        "Player died. UIManager.Instance: "
+        + UIManager.Instance
+    );
+
+    if (UIManager.Instance != null)
+        UIManager.Instance.ShowGameOver();
+
+    else
+        Debug.LogError(
+            "UIManager.Instance es null"
+        );
+
+    Destroy(gameObject);
+
+    return;
+}
+
+        // ZOMBIE
+        if (CompareTag("Enemy"))
         {
-            Debug.Log("Player died. UIManager.Instance: " + UIManager.Instance);
-            if (UIManager.Instance != null)
-                UIManager.Instance.ShowGameOver();
-            else
-                Debug.LogError("UIManager.Instance es null — GameManager no está en la escena o UIManager no tiene Awake ejecutado.");
-            Destroy(gameObject);
-            return;
+            AudioManager.Instance?.PlayZombieDeath();
         }
 
+        // CAJA
+        if (CompareTag("Caja"))
+        {
+            AudioManager.Instance?.PlayCrateBreak();
+        }
+
+        // DROPS ORIGINALES
         if (dropsPickup)
         {
-            if (heartPrefab != null && Random.value <= heartDropChance)
+            if (
+                heartPrefab != null &&
+                Random.value <= heartDropChance
+            )
             {
-            Instantiate(heartPrefab, transform.position, Quaternion.identity);
+                Instantiate(
+                    heartPrefab,
+                    transform.position,
+                    Quaternion.identity
+                );
             }
-            
-            if (bulletPickupPrefabs == null || bulletPickupPrefabs.Length == 0)
+
+            if (
+                bulletPickupPrefabs == null ||
+                bulletPickupPrefabs.Length == 0
+            )
             {
-                Debug.LogWarning($"{gameObject.name}: bulletPickupPrefabs vacío.");
+                Debug.LogWarning(
+                    $"{gameObject.name}: bulletPickupPrefabs vacío."
+                );
             }
-            else if (Random.value <= dropChance)
+            else if (
+                Random.value <= dropChance
+            )
             {
-                // Buscar un prefab válido (no null) en el array
                 GameObject prefab = null;
-                for (int i = 0; i < bulletPickupPrefabs.Length; i++)
+
+                for (
+                    int i = 0;
+                    i < bulletPickupPrefabs.Length;
+                    i++
+                )
                 {
-                    int index = Random.Range(0, bulletPickupPrefabs.Length);
-                    if (bulletPickupPrefabs[index] != null) { prefab = bulletPickupPrefabs[index]; break; }
+                    int index =
+                        Random.Range(
+                            0,
+                            bulletPickupPrefabs.Length
+                        );
+
+                    if (
+                        bulletPickupPrefabs[index]
+                        != null
+                    )
+                    {
+                        prefab =
+                            bulletPickupPrefabs[index];
+
+                        break;
+                    }
                 }
 
                 if (prefab != null)
-                    Instantiate(prefab, transform.position, Quaternion.identity);
+                {
+                    Instantiate(
+                        prefab,
+                        transform.position,
+                        Quaternion.identity
+                    );
+                }
                 else
-                    Debug.LogWarning($"{gameObject.name}: todos los slots de bulletPickupPrefabs son null.");
+                {
+                    Debug.LogWarning(
+                        $"{gameObject.name}: todos los slots son null."
+                    );
+                }
             }
         }
 
         Destroy(gameObject);
     }
 
-    private void OnTriggerEnter2D(Collider2D other)
-{
-    Debug.Log($"OnTriggerEnter2D: {other.gameObject.name} tag={other.tag}, isPlayer={isPlayer}");
-    if (!isPlayer) return;
-
-    if (other.CompareTag("Corazon"))
+    private void OnTriggerEnter2D(
+        Collider2D other
+    )
     {
-        Debug.Log($"Curando {heartHealAmount}. Vida actual: {currentHealth}/{maxHealth}");
-        if (currentHealth < maxHealth)
+        Debug.Log(
+            $"OnTriggerEnter2D: {other.gameObject.name} tag={other.tag}, isPlayer={isPlayer}"
+        );
+
+        if (!isPlayer)
+            return;
+
+        if (other.CompareTag("Corazon"))
         {
-            Heal(heartHealAmount);
-            Destroy(other.gameObject);
+            Debug.Log(
+                $"Curando {heartHealAmount}. Vida actual: {currentHealth}/{maxHealth}"
+            );
+
+            if (currentHealth < maxHealth)
+            {
+                Heal(heartHealAmount);
+
+                Destroy(
+                    other.gameObject
+                );
+            }
         }
     }
-
-
-}
 }

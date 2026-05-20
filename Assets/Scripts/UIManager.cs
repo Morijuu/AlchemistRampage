@@ -8,8 +8,6 @@ public class UIManager : MonoBehaviour
     [Header("Panels")]
     [SerializeField] private GameObject pausePanel;
     [SerializeField] private GameObject gameOverPanel;
-
-    // 🔽 AÑADIDO
     [SerializeField] private GameObject winPanel;
 
     private bool isPaused = false;
@@ -17,88 +15,109 @@ public class UIManager : MonoBehaviour
     private void Awake()
     {
         Instance = this;
-
-        // 🔽 IMPORTANTE (evita juego congelado al iniciar)
         Time.timeScale = 1f;
     }
+private void Start()
+{
+    pausePanel.SetActive(false);
+    gameOverPanel.SetActive(false);
 
-    private void Start()
-    {
-        pausePanel.SetActive(false);
-        gameOverPanel.SetActive(false);
+    if (winPanel != null)
+        winPanel.SetActive(false);
 
-        if (winPanel != null)
-            winPanel.SetActive(false);
-    }
+    AudioManager.Instance?.PlayGameMusic();
+}
 
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Escape) && !IsGameOverShowing())
         {
-            if (isPaused) Resume();
-            else Pause();
+            if (isPaused)
+                Resume();
+            else
+                Pause();
         }
     }
 
-    // --- Pausa ---
+    public bool AnyMenuOpen()
+{
+    return
+        pausePanel.activeSelf ||
+        gameOverPanel.activeSelf ||
+        (
+            winPanel != null &&
+            winPanel.activeSelf
+        );
+}
 
     public void Pause()
     {
         pausePanel.SetActive(true);
+
         Time.timeScale = 0f;
+
+        AudioManager.Instance.PauseMusic();
+
         isPaused = true;
     }
 
     public void Resume()
     {
         pausePanel.SetActive(false);
+
         Time.timeScale = 1f;
+
+        AudioManager.Instance.ResumeMusic();
+
         isPaused = false;
     }
 
-    // --- Game Over ---
-
     public void ShowGameOver()
     {
-        if (gameOverPanel == null) { Debug.LogError("gameOverPanel no asignado en UIManager."); return; }
-        Debug.Log("Activando: " + gameOverPanel.name);
         gameOverPanel.SetActive(true);
+
+        AudioManager.Instance.PlayLose();
+
         Time.timeScale = 0f;
     }
 
-    // --- Win --- 🔽 AÑADIDO (MISMO FORMATO QUE GAME OVER)
-
     public void ShowWin()
     {
-        if (winPanel == null) { Debug.LogError("winPanel no asignado en UIManager."); return; }
-        Debug.Log("Activando: " + winPanel.name);
         winPanel.SetActive(true);
+
+        AudioManager.Instance.PlayWin();
+
         Time.timeScale = 0f;
     }
 
     private bool IsGameOverShowing()
     {
-        // 🔽 MODIFICADO (para bloquear pausa también en win)
-        return gameOverPanel.activeSelf || (winPanel != null && winPanel.activeSelf);
+        return gameOverPanel.activeSelf ||
+               (winPanel != null && winPanel.activeSelf);
     }
-
-    // --- Botones ---
 
     public void Retry()
     {
         Time.timeScale = 1f;
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+
+        AudioManager.Instance.PlayGameMusic();
+
+        SceneManager.LoadScene(
+            SceneManager.GetActiveScene().buildIndex
+        );
     }
 
     public void Quit()
     {
         Time.timeScale = 1f;
+
         Application.Quit();
     }
 
-
     public void BonusLevel()
     {
+        AudioManager.Instance.PlayGameMusic();
+
         SceneManager.LoadScene("Level2");
     }
 }

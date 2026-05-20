@@ -118,6 +118,10 @@ public class PlayerScript : MonoBehaviour
 
     void Update()
     {
+        // Bloquear disparo e inputs al pausar
+        if (Time.timeScale == 0f)
+            return;
+
         Vector3 mousePos = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
         mousePos.z = 0f;
         directionMouse = mousePos - transform.position;
@@ -157,29 +161,73 @@ public class PlayerScript : MonoBehaviour
             Shoot();
     }
 
-    void Shoot()
+void Shoot()
+{
+    if (inventory == null || inventory.ActiveData == null)
+        return;
+
+    float cooldown =
+        1f /
+        inventory.ActiveData.fireRate;
+
+    if (
+        Time.time -
+        lastShootTime <
+        cooldown
+    )
+        return;
+
+    if (
+        !inventory
+        .TryConsumeBullet()
+    )
+        return;
+
+    AudioManager
+        .Instance
+        .PlayShoot();
+
+    lastShootTime =
+        Time.time;
+
+    BulletData data =
+        inventory.ActiveData;
+
+    if (
+        data.bulletType ==
+        BulletType.Regular
+    )
     {
-        if (inventory == null || inventory.ActiveData == null) return;
-
-        float cooldown = 1f / inventory.ActiveData.fireRate;
-        if (Time.time - lastShootTime < cooldown) return;
-
-        if (!inventory.TryConsumeBullet()) return;
-
-        lastShootTime = Time.time;
-        BulletData data = inventory.ActiveData;
-
-        if (data.bulletType == BulletType.Regular)
-        {
-            ShootRaycast(data);
-        }
-        else
-        {
-            GameObject newBullet = Instantiate(sharedBulletPrefab, bulletSpawn.position, Quaternion.identity);
-            newBullet.GetComponent<BulletScript>().Initialize(data, false);
-            newBullet.GetComponent<Rigidbody2D>().linearVelocity = directionMouse.normalized * data.speed;
-        }
+        ShootRaycast(
+            data
+        );
     }
+    else
+    {
+        GameObject newBullet =
+            Instantiate(
+                sharedBulletPrefab,
+                bulletSpawn.position,
+                Quaternion.identity
+            );
+
+        newBullet
+        .GetComponent
+        <BulletScript>()
+        .Initialize(
+            data,
+            false
+        );
+
+        newBullet
+        .GetComponent
+        <Rigidbody2D>()
+        .linearVelocity =
+        directionMouse
+        .normalized
+        * data.speed;
+    }
+}
 
     private void ShootRaycast(BulletData data)
     {
@@ -210,11 +258,24 @@ public class PlayerScript : MonoBehaviour
         raycastLineEndTime = Time.time + raycastLineDuration;
     }
 
-    public void Animations()
-    {
-        if (direccion.x != 0 || direccion.y != 0)
-            animator.SetBool("isRunning", true);
-        else
-            animator.SetBool("isRunning", false);
-    }
+public void Animations()
+{
+    bool moving =
+        direccion.x != 0 ||
+        direccion.y != 0;
+
+    animator.SetBool(
+        "isRunning",
+        moving
+    );
+
+    if (moving)
+        AudioManager
+        .Instance
+        .StartFootsteps();
+    else
+        AudioManager
+        .Instance
+        .StopFootsteps();
+}
 }

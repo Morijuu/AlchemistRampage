@@ -85,12 +85,15 @@ public class BulletPickup : MonoBehaviour
 
     private void OnRecoger()
     {
+            AudioManager.Instance?.PlayPickupBullet();
+
         BulletInventory.Instance.SetBullet(bulletType);
         Destroy(gameObject);
     }
 
     private void OnFusionar()
     {
+        AudioManager.Instance?.PlayMergeBullet();
         // NUEVO: Ahora le pasamos la bala que estamos recogiendo (bulletType) para sumar su cantidad
         BulletInventory.Instance.FuseBullet(pendingFusion, bulletType);
         Destroy(gameObject);

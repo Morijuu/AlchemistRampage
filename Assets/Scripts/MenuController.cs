@@ -3,28 +3,24 @@ using UnityEngine.SceneManagement;
 
 public class MenuController : MonoBehaviour
 {
-    
     public void StartGame()
     {
         SceneManager.LoadScene("Level1");
-    } 
+    }
 
     public void ExitGame()
     {
         Application.Quit();
-        #if UNITY_EDITOR
+
+#if UNITY_EDITOR
         UnityEditor.EditorApplication.isPlaying = false;
-        #else
+#else
         Application.Quit();
-        #endif
+#endif
     }
 
     public void BackMenu()
     {
         SceneManager.LoadScene("InicioScene");
     }
-
-
-
-    
 }
