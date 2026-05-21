@@ -13,11 +13,13 @@ public class MenuAutoSetup : MonoBehaviour
             if (b.GetComponent<UIButtonAnimator>() == null)
                 b.gameObject.AddComponent<UIButtonAnimator>();
 
-            // Slime-feel color feedback without touching the base color/sprite
+            Image img = b.GetComponent<Image>();
+            if (img != null) img.color = new Color(0.40f, 0.78f, 0.40f, 1f);
+
             ColorBlock cb = b.colors;
             cb.normalColor      = Color.white;
-            cb.highlightedColor = new Color(0.82f, 1f, 0.82f, 1f);
-            cb.pressedColor     = new Color(0.60f, 0.85f, 0.60f, 1f);
+            cb.highlightedColor = new Color(0.85f, 1f, 0.85f, 1f);
+            cb.pressedColor     = new Color(0.65f, 0.82f, 0.65f, 1f);
             cb.selectedColor    = cb.highlightedColor;
             cb.fadeDuration     = 0.05f;
             b.colors = cb;

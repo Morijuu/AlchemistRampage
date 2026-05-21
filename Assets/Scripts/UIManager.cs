@@ -326,14 +326,16 @@ public class UIManager : MonoBehaviour
         rt.pivot = new Vector2(0.5f, 0.5f); rt.anchoredPosition = pos; rt.sizeDelta = size;
 
         Image img = go.AddComponent<Image>();
-        img.color = Color.white;
+        img.color = new Color(0.40f, 0.78f, 0.40f, 1f);
 
         Button btn = go.AddComponent<Button>();
         btn.targetGraphic = img;
         ColorBlock cb = btn.colors;
         cb.normalColor      = Color.white;
-        cb.highlightedColor = new Color(0.85f, 0.85f, 0.85f, 1f);
-        cb.pressedColor     = new Color(0.65f, 0.65f, 0.65f, 1f);
+        cb.highlightedColor = new Color(0.85f, 1f, 0.85f, 1f);
+        cb.pressedColor     = new Color(0.65f, 0.82f, 0.65f, 1f);
+        cb.selectedColor    = cb.highlightedColor;
+        cb.fadeDuration     = 0.05f;
         btn.colors = cb;
 
         System.Action captured = onClick;
