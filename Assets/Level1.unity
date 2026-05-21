@@ -44099,7 +44099,6 @@ Transform:
   - {fileID: 171904174}
   - {fileID: 1807797825}
   - {fileID: 271177035}
-  - {fileID: 1042419528}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0.407, y: 0, z: 0}
 --- !u!114 &672960762
@@ -44118,9 +44117,7 @@ MonoBehaviour:
   animator: {fileID: 171904176}
   sharedBulletPrefab: {fileID: 281633708342098927, guid: fc0123ee7356cc6498cb4e2aecb37290, type: 3}
   bulletSpawn: {fileID: 271177035}
-  raycastLine: {fileID: 0}
   raycastMaxDistance: 20
-  raycastLineDuration: 0.08
   speed: 6
   runspeed: 11
   agotado: 0
@@ -57651,7 +57648,7 @@ RectTransform:
   - {fileID: 824795244}
   - {fileID: 1676678073}
   - {fileID: 1036033819}
-  m_Father: {fileID: 672960761}
+  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -124692,6 +124689,7 @@ PrefabInstance:
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
+  - {fileID: 1042419528}
   - {fileID: 519420032}
   - {fileID: 619394802}
   - {fileID: 1404126900}

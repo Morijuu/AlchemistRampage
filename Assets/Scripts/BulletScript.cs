@@ -22,6 +22,7 @@ public class BulletScript : MonoBehaviour
     public float explosionTime = 1f;
 
     private SpriteRenderer spriteRenderer;
+    private ProjectileVFX  vfx;
     private bool exploded = false;
 
     public void Initialize(BulletData bulletData, bool enemyBullet = false, bool fragment = false)
@@ -36,6 +37,9 @@ public class BulletScript : MonoBehaviour
         ownCollider = col;
 
         Destroy(gameObject, BULLET_LIFETIME);
+
+        vfx = gameObject.AddComponent<ProjectileVFX>();
+        vfx.Setup(BulletTypeColor(data.bulletType), spin: false);
 
         spawnTime = Time.time;
 
@@ -124,6 +128,7 @@ public class BulletScript : MonoBehaviour
         if (col != null)
             col.enabled = false;
 
+        vfx?.PlayImpact(explosionTime);
         Destroy(gameObject, explosionTime);
     }
 
@@ -411,4 +416,16 @@ public class BulletScript : MonoBehaviour
 
         return nearest;
     }
+
+    private static Color BulletTypeColor(BulletType type) => type switch
+    {
+        BulletType.Heavy    => new Color(1f,    0.53f, 0f,    1f),
+        BulletType.Bouncy   => new Color(0f,    0.87f, 1f,    1f),
+        BulletType.Area     => new Color(0.53f, 1f,    0.27f, 1f),
+        BulletType.Frag     => new Color(1f,    0.93f, 0f,    1f),
+        BulletType.Target   => new Color(0.8f,  0.53f, 1f,    1f),
+        BulletType.Chain    => new Color(0.27f, 0.67f, 1f,    1f),
+        BulletType.Piercing => new Color(1f,    0.27f, 0.27f, 1f),
+        _                   => Color.white,
+    };
 }

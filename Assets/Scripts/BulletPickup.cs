@@ -50,7 +50,9 @@ public class BulletPickup : MonoBehaviour
 
         BulletInventory inv = BulletInventory.Instance;
         BulletType activeType = inv.ActiveData != null ? inv.ActiveData.bulletType : BulletType.None;
-        pendingFusion = BulletInventory.GetFusionResult(activeType, bulletType);
+        pendingFusion = inv.ShotCount > 0
+            ? BulletInventory.GetFusionResult(activeType, bulletType)
+            : BulletType.None;
 
         BulletData pickupData = inv.GetDataForType(bulletType);
         recogerLabel.text = "[E] Pick Up " + (pickupData != null ? pickupData.displayName : bulletType.ToString());

@@ -51,7 +51,7 @@ public class PlayerHUD : MonoBehaviour
         BulletInventory inv = BulletInventory.Instance;
         if (inv == null) return;
 
-        bool hasAmmo = inv.ActiveData != null && inv.ActiveData.bulletType != BulletType.None;
+        bool hasAmmo = inv.ActiveData != null && inv.ActiveData.bulletType != BulletType.None && inv.ShotCount > 0;
 
         if (hasAmmo)
         {

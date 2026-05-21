@@ -339,6 +339,9 @@ public class EnemyThrowerChase : MonoBehaviour
                 direction *
                 projectileSpeed;
         }
+
+        proj.AddComponent<ProjectileVFX>()
+            .Setup(new Color(1f, 0.40f, 0.10f), spin: true, standaloneMode: true);
     }
 
     void OnDrawGizmosSelected()

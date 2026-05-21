@@ -14,9 +14,8 @@ public class PlayerScript : MonoBehaviour
     [SerializeField] private Transform bulletSpawn;
 
     [Header("Raycast Shot (Regular)")]
-    [SerializeField] private LineRenderer raycastLine;
     [SerializeField] private float raycastMaxDistance = 60f;
-    [SerializeField] private float raycastLineDuration = 0.08f;
+    private RaycastLineEffect raycastEffect;
 
     public float speed;
     public float runspeed;
@@ -34,10 +33,18 @@ public class PlayerScript : MonoBehaviour
     private BulletInventory inventory;
     private float lastShootTime = float.NegativeInfinity;
 
-    private Vector2 raycastEndPoint;
-    private float raycastLineEndTime;
 
-    private GameObject weaponObject;
+    private GameObject    weaponObject;
+    private WeaponAnimator weaponAnim;
+    private Vector3       weaponBaseLocalPos;
+    private float         bobTime = 0f;
+
+    // Body squash/stretch
+    private Vector3 baseBodyScale;
+    private float   bodyScaleX  = 1f;
+    private float   bodyScaleY  = 1f;
+    private float   breathTime  = 0f;
+    private bool    wasMoving   = false;
 
     private Health health;
 
@@ -66,18 +73,15 @@ public class PlayerScript : MonoBehaviour
         foreach (Transform t in GetComponentsInChildren<Transform>(true))
             if (t.CompareTag("Weapon")) { weaponObject = t.gameObject; break; }
 
-        if (raycastLine == null)
-            raycastLine = gameObject.AddComponent<LineRenderer>();
+        if (weaponObject != null)
+        {
+            weaponAnim = weaponObject.GetComponent<WeaponAnimator>()
+                         ?? weaponObject.AddComponent<WeaponAnimator>();
+            weaponBaseLocalPos = weaponObject.transform.localPosition;
+        }
 
-        raycastLine.positionCount = 2;
-        raycastLine.useWorldSpace = true;
-        raycastLine.startWidth = 0.05f;
-        raycastLine.endWidth = 0.05f;
-        raycastLine.material = new Material(Shader.Find("Sprites/Default"));
-        raycastLine.startColor = Color.white;
-        raycastLine.endColor = Color.white;
-        raycastLine.sortingOrder = 10;
-        raycastLine.enabled = false;
+        baseBodyScale = transform.localScale;
+        raycastEffect = gameObject.AddComponent<RaycastLineEffect>();
     }
 
     void FixedUpdate()
@@ -143,6 +147,7 @@ public class PlayerScript : MonoBehaviour
         transform.rotation = Quaternion.Euler(0f, 0f, smoothAngle);
 
         Animations();
+        UpdateBodyAnimation();
         Debug.DrawRay(bulletSpawn.position, directionMouse.normalized * raycastMaxDistance, Color.green);
 
         if (weaponObject != null)
@@ -150,20 +155,23 @@ public class PlayerScript : MonoBehaviour
             bool hasAmmo = inventory != null && inventory.ActiveData != null
                            && inventory.ActiveData.bulletType != BulletType.None
                            && inventory.ShotCount > 0;
-            weaponObject.SetActive(hasAmmo);
-        }
+            weaponAnim?.SetVisible(hasAmmo);
 
-        if (raycastLine != null)
-        {
-            if (Time.time < raycastLineEndTime)
+            // Weapon bob — oscillates with footstep rhythm while moving
+            float moveSpeed = direccion.magnitude;
+            if (moveSpeed > 0.1f)
             {
-                raycastLine.SetPosition(0, new Vector3(bulletSpawn.position.x, bulletSpawn.position.y, 0f));
-                raycastLine.SetPosition(1, new Vector3(raycastEndPoint.x, raycastEndPoint.y, 0f));
-                raycastLine.enabled = true;
+                float freq = corriendo && !agotado ? 11f : 8f;
+                bobTime += Time.deltaTime * freq;
+                float bobY = Mathf.Sin(bobTime) * 0.04f;
+                float bobX = Mathf.Cos(bobTime * 0.5f) * 0.015f;
+                weaponObject.transform.localPosition = weaponBaseLocalPos + new Vector3(bobX, bobY, 0f);
             }
             else
             {
-                raycastLine.enabled = false;
+                bobTime = 0f;
+                weaponObject.transform.localPosition = Vector3.Lerp(
+                    weaponObject.transform.localPosition, weaponBaseLocalPos, Time.deltaTime * 10f);
             }
         }
 
@@ -194,6 +202,7 @@ void Shoot()
         return;
 
     AudioManager.Instance?.PlayShoot();
+    weaponAnim?.Recoil();
 
     lastShootTime =
         Time.time;
@@ -262,24 +271,64 @@ void Shoot()
             break;
         }
 
-        raycastEndPoint = endPoint;
-        raycastLineEndTime = Time.time + raycastLineDuration;
+        raycastEffect?.Fire(origin, endPoint);
     }
 
 public void Animations()
 {
-    bool moving =
-        direccion.x != 0 ||
-        direccion.y != 0;
-
-    animator.SetBool(
-        "isRunning",
-        moving
-    );
+    bool moving = direccion.x != 0 || direccion.y != 0;
+    animator.SetBool("isRunning", moving);
 
     if (moving)
         AudioManager.Instance?.StartFootsteps();
     else
         AudioManager.Instance?.StopFootsteps();
+}
+
+private void UpdateBodyAnimation()
+{
+    bool moving    = direccion.magnitude > 0.1f;
+    bool sprinting = moving && corriendo && !agotado;
+
+    float targetX = 1f, targetY = 1f;
+
+    if (moving)
+    {
+        // Footstep squash/stretch synced with weapon bob cycle
+        float step     = (Mathf.Sin(bobTime) + 1f) * 0.5f;   // 0→1 per stride
+        float amt      = sprinting ? 0.08f : 0.05f;
+        targetX = 1f + amt * step;          // stretch in facing direction on stride
+        targetY = 1f - amt * 0.55f * step; // compress perpendicular
+
+        if (sprinting)
+        {
+            targetX *= 1.05f;   // overall slightly taller when at full sprint
+            targetY *= 0.96f;
+        }
+
+        // Pop out when starting to move
+        if (!wasMoving) { bodyScaleX = 0.82f; bodyScaleY = 1.18f; }
+    }
+    else
+    {
+        // Idle breathing — slow, subtle
+        breathTime += Time.deltaTime * 1.1f;
+        float breath = Mathf.Sin(breathTime) * 0.022f;
+        targetX = 1f + breath;
+        targetY = 1f - breath * 0.6f;
+
+        // Landing squash when stopping
+        if (wasMoving) { bodyScaleX = 1.14f; bodyScaleY = 0.86f; }
+    }
+
+    wasMoving = moving;
+
+    bodyScaleX = Mathf.Lerp(bodyScaleX, targetX, Time.deltaTime * 15f);
+    bodyScaleY = Mathf.Lerp(bodyScaleY, targetY, Time.deltaTime * 15f);
+
+    transform.localScale = new Vector3(
+        baseBodyScale.x * bodyScaleX,
+        baseBodyScale.y * bodyScaleY,
+        baseBodyScale.z);
 }
 }

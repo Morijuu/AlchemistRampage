@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 7861613005828094452}
   - component: {fileID: 7360509075507667869}
   - component: {fileID: -4621481411569649072}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: AreaEffectZone
   m_TagString: Untagged
   m_Icon: {fileID: 0}
