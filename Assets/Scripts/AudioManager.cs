@@ -62,6 +62,9 @@ public class AudioManager : MonoBehaviour
 
         DontDestroyOnLoad(gameObject);
 
+        musicVolume = PlayerPrefs.GetFloat("MusicVolume", musicVolume);
+        sfxVolume   = PlayerPrefs.GetFloat("SFXVolume",   sfxVolume);
+
         SceneManager.sceneLoaded += OnSceneLoaded;
 
         musicSource.playOnAwake = false;
@@ -353,6 +356,18 @@ public class AudioManager : MonoBehaviour
             footstepSound;
 
         footstepSource.Play();
+    }
+
+    public void SetMusicVolume(float v)
+    {
+        musicVolume = Mathf.Clamp01(v);
+        PlayerPrefs.SetFloat("MusicVolume", musicVolume);
+    }
+
+    public void SetSFXVolume(float v)
+    {
+        sfxVolume = Mathf.Clamp01(v);
+        PlayerPrefs.SetFloat("SFXVolume", sfxVolume);
     }
 
     public void StopFootsteps()

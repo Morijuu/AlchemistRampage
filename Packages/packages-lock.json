@@ -1,5 +1,13 @@
 {
   "dependencies": {
+    "com.justinpbarnett.unity-mcp": {
+      "version": "file:D:/descargas/unity-mcp-master/unity-mcp-master",
+      "depth": 0,
+      "source": "local",
+      "dependencies": {
+        "com.unity.nuget.newtonsoft-json": "3.0.2"
+      }
+    },
     "com.unity.2d.animation": {
       "version": "10.1.4",
       "depth": 1,
@@ -197,6 +205,13 @@
     "com.unity.nuget.mono-cecil": {
       "version": "1.11.4",
       "depth": 3,
+      "source": "registry",
+      "dependencies": {},
+      "url": "https://packages.unity.com"
+    },
+    "com.unity.nuget.newtonsoft-json": {
+      "version": "3.2.1",
+      "depth": 1,
       "source": "registry",
       "dependencies": {},
       "url": "https://packages.unity.com"

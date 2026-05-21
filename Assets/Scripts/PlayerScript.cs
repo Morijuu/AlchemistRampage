@@ -23,6 +23,8 @@ public class PlayerScript : MonoBehaviour
     bool corriendo;
     public bool agotado = false;
 
+    [HideInInspector] public bool cinematicMode = false;
+
     public float stamina = 100f;
     public float maxStamina = 100f;
 
@@ -80,6 +82,12 @@ public class PlayerScript : MonoBehaviour
 
     void FixedUpdate()
     {
+        if (cinematicMode)
+        {
+            rb.linearVelocity = Vector2.zero;
+            return;
+        }
+
         if (health != null && health.IsKnocked())
         {
             return;
@@ -118,6 +126,8 @@ public class PlayerScript : MonoBehaviour
 
     void Update()
     {
+        if (cinematicMode) return;
+
         // Bloquear disparo e inputs al pausar
         if (Time.timeScale == 0f)
             return;
@@ -183,9 +193,7 @@ void Shoot()
     )
         return;
 
-    AudioManager
-        .Instance
-        .PlayShoot();
+    AudioManager.Instance?.PlayShoot();
 
     lastShootTime =
         Time.time;
@@ -270,12 +278,8 @@ public void Animations()
     );
 
     if (moving)
-        AudioManager
-        .Instance
-        .StartFootsteps();
+        AudioManager.Instance?.StartFootsteps();
     else
-        AudioManager
-        .Instance
-        .StopFootsteps();
+        AudioManager.Instance?.StopFootsteps();
 }
 }
