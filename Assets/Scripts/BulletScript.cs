@@ -72,7 +72,7 @@ public class BulletScript : MonoBehaviour
     {
         if (data == null || exploded) return;
 
-        if (other.CompareTag("Pickup")) return;
+        if (other.CompareTag("Pickup") || other.gameObject.layer == LayerMask.NameToLayer("PickupLayer")) return;
 
         if (!isEnemyBullet && other.CompareTag("Player")) return;
         if (isEnemyBullet && other.CompareTag("Enemy")) return;
@@ -151,7 +151,7 @@ public class BulletScript : MonoBehaviour
         {
             if (hit.collider == ownCollider) continue;
 
-            if (hit.collider.CompareTag("Pickup")) continue;
+            if (hit.collider.CompareTag("Pickup") || hit.collider.gameObject.layer == LayerMask.NameToLayer("PickupLayer")) continue;
 
             if (!isEnemyBullet && hit.collider.CompareTag("Player")) continue;
             if (isEnemyBullet && hit.collider.CompareTag("Enemy")) continue;

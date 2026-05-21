@@ -48,6 +48,7 @@ public class ProjectileVFX : MonoBehaviour
     {
         if (!standalone || played) return;
         if (other.CompareTag("Pickup") || other.CompareTag("Enemy")) return;
+        if (other.layer == LayerMask.NameToLayer("PickupLayer")) return;
 
         var rb = GetComponent<Rigidbody2D>();
         if (rb != null) rb.linearVelocity = Vector2.zero;
