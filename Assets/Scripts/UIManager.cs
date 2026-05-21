@@ -37,6 +37,9 @@ public class UIManager : MonoBehaviour
         BuildOptionsCanvas();
         StylePausePanel();
 
+        if (GetComponent<CameraFlash>() == null)
+            gameObject.AddComponent<CameraFlash>();
+
         AudioManager.Instance?.PlayGameMusic();
     }
 

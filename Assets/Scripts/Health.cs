@@ -46,6 +46,8 @@ public class Health : MonoBehaviour
         if (isPlayer)
         {
             AudioManager.Instance?.PlayPlayerHit();
+            CameraFlash.Instance?.TriggerFlash();
+            CameraFlash.Instance?.SetLowHealth(currentHealth < 30);
         }
         else
         {
@@ -157,6 +159,8 @@ public class Health : MonoBehaviour
 
         // AUDIO CURACIÓN
         AudioManager.Instance?.PlayHeal();
+        if (isPlayer)
+            CameraFlash.Instance?.SetLowHealth(currentHealth < 30);
     }
 
     void Die()

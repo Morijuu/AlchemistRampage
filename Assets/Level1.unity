@@ -1980,6 +1980,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player: {fileID: 672960761}
   introTextCanvas: {fileID: 157982056}
+  playerCanvas: {fileID: 1042419524}
   pitidoClip: {fileID: 8300000, guid: d67356750376aa94a85c37edf55332dc, type: 3}
   keyboardClip: {fileID: 8300000, guid: a7b4f8e17897dcf479f6b7167a9e0b54, type: 3}
 --- !u!4 &34547161
@@ -9802,7 +9803,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Este lugar est\xE1 infestado de zombies...\ndebo salir cuanto antes"
+  m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2100000, guid: 79459efec17a4d00a321bdcc27bbc385, type: 2}
@@ -118750,7 +118751,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 128.9784, y: -18.32978}
+  m_AnchoredPosition: {x: 128.9784, y: -11}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2023525584

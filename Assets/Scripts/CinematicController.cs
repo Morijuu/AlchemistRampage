@@ -10,6 +10,7 @@ public class CinematicController : MonoBehaviour
     [Header("Referencias")]
     [SerializeField] private Transform player;
     [SerializeField] private GameObject introTextCanvas;
+    [SerializeField] private GameObject playerCanvas;
 
     [Header("Audio Cinemática")]
     [SerializeField] private AudioClip pitidoClip;
@@ -34,12 +35,16 @@ public class CinematicController : MonoBehaviour
     private ColorAdjustments colorAdjustments;
 
     private PlayerScript playerScript;
+    private bool canSkip;
+    private bool skipped;
 
     private void Awake()
     {
         audioSource = gameObject.AddComponent<AudioSource>();
         audioSource.playOnAwake = false;
         audioSource.spatialBlend = 0f;
+
+        canSkip = PlayerPrefs.GetInt("CinematicSeen", 0) == 1;
 
         if (player != null)
         {
@@ -50,10 +55,18 @@ public class CinematicController : MonoBehaviour
             player.rotation = Quaternion.Euler(0f, 0f, 90f);
         }
 
+        if (playerCanvas != null) playerCanvas.SetActive(false);
+
         if (introTextCanvas != null)
             introTextCanvas.SetActive(false);
 
         SetupPostProcessing();
+    }
+
+    private void Update()
+    {
+        if (canSkip && !skipped && Input.GetKeyDown(KeyCode.Space))
+            Skip();
     }
 
     private void Start()
@@ -160,6 +173,56 @@ public class CinematicController : MonoBehaviour
         fr.sizeDelta = Vector2.zero;
         fadeImage = fadeGO.AddComponent<Image>();
         fadeImage.color = new Color(0f, 0f, 0f, 0f);
+
+        if (canSkip) BuildSkipHint(canvasGO.transform);
+    }
+
+    private void BuildSkipHint(Transform parent)
+    {
+        GameObject hint = new GameObject("SkipHint");
+        hint.transform.SetParent(parent, false);
+        RectTransform rt = hint.AddComponent<RectTransform>();
+        rt.anchorMin = new Vector2(1f, 0f);
+        rt.anchorMax = new Vector2(1f, 0f);
+        rt.pivot     = new Vector2(1f, 0f);
+        rt.anchoredPosition = new Vector2(-40f, 40f);
+        rt.sizeDelta = new Vector2(270f, 46f);
+
+        CanvasGroup cg = hint.AddComponent<CanvasGroup>();
+        cg.alpha = 0f;
+        hint.AddComponent<Image>().color = new Color(0f, 0f, 0f, 0.55f);
+
+        // Key box
+        GameObject keyBox = new GameObject("KeyBox");
+        keyBox.transform.SetParent(hint.transform, false);
+        RectTransform kr = keyBox.AddComponent<RectTransform>();
+        kr.anchorMin = new Vector2(0f, 0.5f); kr.anchorMax = new Vector2(0f, 0.5f);
+        kr.pivot = new Vector2(0f, 0.5f);
+        kr.anchoredPosition = new Vector2(10f, 0f);
+        kr.sizeDelta = new Vector2(112f, 30f);
+        keyBox.AddComponent<Image>().color = new Color(0.88f, 0.88f, 0.88f, 1f);
+
+        GameObject keyTxtGO = new GameObject("KeyTxt");
+        keyTxtGO.transform.SetParent(keyBox.transform, false);
+        RectTransform ktr = keyTxtGO.AddComponent<RectTransform>();
+        ktr.anchorMin = Vector2.zero; ktr.anchorMax = Vector2.one; ktr.sizeDelta = Vector2.zero;
+        TextMeshProUGUI keyTmp = keyTxtGO.AddComponent<TextMeshProUGUI>();
+        keyTmp.text = "ESPACIO"; keyTmp.fontSize = 14f; keyTmp.fontStyle = FontStyles.Bold;
+        keyTmp.alignment = TextAlignmentOptions.Center;
+        keyTmp.color = new Color(0.1f, 0.1f, 0.1f, 1f);
+
+        // Label
+        GameObject labelGO = new GameObject("Label");
+        labelGO.transform.SetParent(hint.transform, false);
+        RectTransform lr = labelGO.AddComponent<RectTransform>();
+        lr.anchorMin = new Vector2(0f, 0f); lr.anchorMax = new Vector2(1f, 1f);
+        lr.offsetMin = new Vector2(132f, 0f); lr.offsetMax = new Vector2(-10f, 0f);
+        TextMeshProUGUI lbl = labelGO.AddComponent<TextMeshProUGUI>();
+        lbl.text = "para saltar"; lbl.fontSize = 16f;
+        lbl.alignment = TextAlignmentOptions.Left;
+        lbl.color = new Color(0.85f, 0.85f, 0.85f, 1f);
+
+        StartCoroutine(FadeCanvasGroup(hint, 0f, 1f, 0.6f));
     }
 
     private RectTransform MakeEyelid(Transform parent, bool top)
@@ -273,6 +336,49 @@ public class CinematicController : MonoBehaviour
 
         yield return StartCoroutine(FadeImg(1f, 0f, 0.8f));
 
+        PlayerPrefs.SetInt("CinematicSeen", 1);
+        PlayerPrefs.Save();
+
+        if (playerCanvas != null) playerCanvas.SetActive(true);
+        Cleanup();
+    }
+
+    // ─────────────────────────────────────────
+    // SKIP
+    // ─────────────────────────────────────────
+    private void Skip()
+    {
+        skipped = true;
+        StopAllCoroutines();
+
+        if (chromaticAberration != null) chromaticAberration.intensity.Override(0f);
+        if (lensDistortion      != null) lensDistortion.intensity.Override(0f);
+        if (colorAdjustments    != null) colorAdjustments.saturation.Override(0f);
+
+        if (playerScript != null) playerScript.cinematicMode = false;
+
+        PlayerPrefs.SetInt("CinematicSeen", 1);
+        PlayerPrefs.Save();
+
+        StartCoroutine(SkipFade());
+    }
+
+    private IEnumerator SkipFade()
+    {
+        float startAlpha = fadeImage != null ? fadeImage.color.a : 0f;
+        float t = 0f, dur = 0.35f;
+        while (t < dur)
+        {
+            if (fadeImage != null)
+                fadeImage.color = new Color(0f, 0f, 0f, Mathf.Lerp(startAlpha, 1f, t / dur));
+            t += Time.deltaTime;
+            yield return null;
+        }
+
+        if (playerCanvas != null) playerCanvas.SetActive(true);
+        AudioManager.Instance?.ResumeMusic();
+
+        yield return StartCoroutine(FadeImg(1f, 0f, 0.4f));
         Cleanup();
     }
 
