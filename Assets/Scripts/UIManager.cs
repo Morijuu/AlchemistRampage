@@ -19,6 +19,9 @@ public class UIManager : MonoBehaviour
     private GameObject winCanvas;
     private GameObject gameOverCanvas;
     private GameObject optionsCanvas;
+    private GameObject optMainPanel;
+    private GameObject optVolumePanel;
+    private GameObject optControlsPanel;
 
     private void Awake()
     {
@@ -127,7 +130,7 @@ public class UIManager : MonoBehaviour
     public void ShowOptions()
     {
         if (optionsCanvas == null) return;
-        SyncSliders();
+        ShowOptionsMain();
         optionsCanvas.SetActive(true);
     }
 
@@ -136,10 +139,32 @@ public class UIManager : MonoBehaviour
         if (optionsCanvas != null) optionsCanvas.SetActive(false);
     }
 
+    private void ShowOptionsMain()
+    {
+        if (optMainPanel     != null) optMainPanel.SetActive(true);
+        if (optVolumePanel   != null) optVolumePanel.SetActive(false);
+        if (optControlsPanel != null) optControlsPanel.SetActive(false);
+    }
+
+    private void ShowVolumePanel()
+    {
+        SyncSliders();
+        if (optMainPanel     != null) optMainPanel.SetActive(false);
+        if (optVolumePanel   != null) optVolumePanel.SetActive(true);
+        if (optControlsPanel != null) optControlsPanel.SetActive(false);
+    }
+
+    private void ShowControlsPanel()
+    {
+        if (optMainPanel     != null) optMainPanel.SetActive(false);
+        if (optVolumePanel   != null) optVolumePanel.SetActive(false);
+        if (optControlsPanel != null) optControlsPanel.SetActive(true);
+    }
+
     private void SyncSliders()
     {
-        if (AudioManager.Instance == null || optionsCanvas == null) return;
-        Slider[] sliders = optionsCanvas.GetComponentsInChildren<Slider>(true);
+        if (AudioManager.Instance == null || optVolumePanel == null) return;
+        Slider[] sliders = optVolumePanel.GetComponentsInChildren<Slider>(true);
         if (sliders.Length >= 2)
         {
             sliders[0].SetValueWithoutNotify(AudioManager.Instance.musicVolume);
@@ -189,13 +214,11 @@ public class UIManager : MonoBehaviour
     {
         optionsCanvas = MakeOverlay("OptionsOverlay", 300);
 
-        // Full-screen background: copy pause panel's image so it looks like the pause screen
         GameObject bgGO = new GameObject("PauseBg");
         bgGO.transform.SetParent(optionsCanvas.transform, false);
         RectTransform bgRt = bgGO.AddComponent<RectTransform>();
         bgRt.anchorMin = Vector2.zero; bgRt.anchorMax = Vector2.one; bgRt.sizeDelta = Vector2.zero;
         Image bgImg = bgGO.AddComponent<Image>();
-
         Image pauseImg = pausePanel != null ? pausePanel.GetComponent<Image>() : null;
         if (pauseImg != null && pauseImg.sprite != null)
         {
@@ -208,24 +231,101 @@ public class UIManager : MonoBehaviour
             bgImg.color = new Color(0.15f, 0.05f, 0.05f, 1f);
         }
 
-        // Dark tint so text is readable
         MakeFullRect(optionsCanvas.transform, new Color(0f, 0f, 0f, 0.45f));
 
-        // Card
-        GameObject card = MakeCard(optionsCanvas.transform, new Vector2(600f, 320f));
-        MakeTitle(card.transform, "OPCIONES", new Vector2(0f, 100f), new Vector2(500f, 70f));
-        MakeDivider(card.transform, new Vector2(0f, 58f));
+        // ── Panel principal de opciones ─────────────────────────────────────
+        optMainPanel = MakeCard(optionsCanvas.transform, new Vector2(700f, 420f));
+        MakeTitle(optMainPanel.transform, "OPCIONES", new Vector2(0f, 140f), new Vector2(600f, 72f));
+        MakeDivider(optMainPanel.transform, new Vector2(0f, 92f));
+        MakeBtn(optMainPanel.transform, "VOLUMEN",    new Vector2(0f,  26f), new Vector2(260f, 58f), ShowVolumePanel);
+        MakeBtn(optMainPanel.transform, "CONTROLES",  new Vector2(0f, -58f), new Vector2(260f, 58f), ShowControlsPanel);
+        MakeBtn(optMainPanel.transform, "CERRAR",     new Vector2(0f,-148f), new Vector2(260f, 58f), HideOptions);
 
-        MakeSliderRow(card.transform, "MÚSICA",  new Vector2(0f, 15f),
+        // ── Panel de volumen ────────────────────────────────────────────────
+        optVolumePanel = MakeCard(optionsCanvas.transform, new Vector2(700f, 380f));
+        MakeTitle(optVolumePanel.transform, "VOLUMEN", new Vector2(0f, 120f), new Vector2(600f, 72f));
+        MakeDivider(optVolumePanel.transform, new Vector2(0f, 72f));
+        MakeSliderRow(optVolumePanel.transform, "MÚSICA",   new Vector2(0f,  18f),
             v => AudioManager.Instance?.SetMusicVolume(v),
             () => AudioManager.Instance != null ? AudioManager.Instance.musicVolume : 0.4f);
-        MakeSliderRow(card.transform, "EFECTOS", new Vector2(0f, -55f),
+        MakeSliderRow(optVolumePanel.transform, "EFECTOS", new Vector2(0f, -65f),
             v => AudioManager.Instance?.SetSFXVolume(v),
             () => AudioManager.Instance != null ? AudioManager.Instance.sfxVolume : 0.8f);
+        MakeBtn(optVolumePanel.transform, "VOLVER", new Vector2(0f,-152f), new Vector2(260f, 58f), ShowOptionsMain);
+        optVolumePanel.SetActive(false);
 
-        MakeBtn(card.transform, "CERRAR", new Vector2(0f, -128f), new Vector2(220f, 50f), HideOptions);
+        // ── Panel de controles ──────────────────────────────────────────────
+        optControlsPanel = MakeCard(optionsCanvas.transform, new Vector2(780f, 530f));
+        MakeTitle(optControlsPanel.transform, "CONTROLES", new Vector2(0f, 220f), new Vector2(700f, 72f));
+        MakeDivider(optControlsPanel.transform, new Vector2(0f, 170f));
+        BuildControlsGrid(optControlsPanel.transform);
+        MakeBtn(optControlsPanel.transform, "VOLVER", new Vector2(0f,-220f), new Vector2(260f, 58f), ShowOptionsMain);
+        optControlsPanel.SetActive(false);
 
         optionsCanvas.SetActive(false);
+    }
+
+    private void BuildControlsGrid(Transform parent)
+    {
+        var controls = new (string key, string action)[]
+        {
+            ("WASD",      "Mover"),
+            ("MOUSE",     "Apuntar"),
+            ("L. CLICK",  "Disparar"),
+            ("L. SHIFT",  "Correr"),
+            ("E",         "Interactuar"),
+            ("F",         "Combinar"),
+            ("ESC",       "Pausa"),
+        };
+
+        float startY  = 120f;
+        float rowH    = 46f;
+        float colKeyL = -310f;
+        float colKeyR =   18f;
+        int   half    = (controls.Length + 1) / 2;
+
+        for (int i = 0; i < controls.Length; i++)
+        {
+            float x = i < half ? colKeyL : colKeyR;
+            float y = startY - (i < half ? i : i - half) * rowH;
+            MakeControlRow(parent, controls[i].key, controls[i].action, new Vector2(x, y));
+        }
+    }
+
+    private void MakeControlRow(Transform parent, string key, string action, Vector2 pos)
+    {
+        const float badgeW = 110f, labelW = 140f, gap = 8f;
+
+        // Tecla (badge)
+        GameObject keyGO = new GameObject("Key");
+        keyGO.transform.SetParent(parent, false);
+        RectTransform kr = keyGO.AddComponent<RectTransform>();
+        kr.anchorMin = new Vector2(0.5f, 0.5f); kr.anchorMax = new Vector2(0.5f, 0.5f);
+        kr.pivot = new Vector2(0f, 0.5f);
+        kr.anchoredPosition = pos; kr.sizeDelta = new Vector2(badgeW, 30f);
+        keyGO.AddComponent<Image>().color = new Color(0.18f, 0.18f, 0.25f, 1f);
+
+        GameObject keyLbl = new GameObject("Lbl");
+        keyLbl.transform.SetParent(keyGO.transform, false);
+        RectTransform klr = keyLbl.AddComponent<RectTransform>();
+        klr.anchorMin = Vector2.zero; klr.anchorMax = Vector2.one; klr.sizeDelta = Vector2.zero;
+        TextMeshProUGUI kt = keyLbl.AddComponent<TextMeshProUGUI>();
+        kt.text = key; kt.fontSize = 13f; kt.fontStyle = FontStyles.Bold;
+        kt.alignment = TextAlignmentOptions.Center;
+        kt.color = new Color(0.95f, 0.82f, 0.4f, 1f);
+
+        // Acción
+        GameObject actGO = new GameObject("Act");
+        actGO.transform.SetParent(parent, false);
+        RectTransform ar = actGO.AddComponent<RectTransform>();
+        ar.anchorMin = new Vector2(0.5f, 0.5f); ar.anchorMax = new Vector2(0.5f, 0.5f);
+        ar.pivot = new Vector2(0f, 0.5f);
+        ar.anchoredPosition = new Vector2(pos.x + badgeW + gap, pos.y);
+        ar.sizeDelta = new Vector2(labelW, 30f);
+        TextMeshProUGUI at = actGO.AddComponent<TextMeshProUGUI>();
+        at.text = action; at.fontSize = 14f;
+        at.alignment = TextAlignmentOptions.Left;
+        at.color = new Color(0.9f, 0.9f, 0.9f, 1f);
     }
 
     // ─── PAUSE PANEL ───────────────────────────────────────────────────────
@@ -233,15 +333,11 @@ public class UIManager : MonoBehaviour
     {
         if (pausePanel == null) return;
 
-        // Hide original buttons (don't delete — they stay inactive)
         foreach (Button b in pausePanel.GetComponentsInChildren<Button>(true))
             b.gameObject.SetActive(false);
 
-        // The pause panel has localScale 0.76, so we compensate button sizes:
-        // desired visual size ~290x50 → local size = desired / 0.76
         const float btnW = 382f, btnH = 66f, spacing = 88f;
 
-        // 4 buttons stacked, centered vertically
         float startY = spacing * 1.5f;
         MakeBtn(pausePanel.transform, "CONTINUAR",      new Vector2(0f, startY),             new Vector2(btnW, btnH), Resume);
         MakeBtn(pausePanel.transform, "REINTENTAR",     new Vector2(0f, startY - spacing),   new Vector2(btnW, btnH), Retry);
@@ -249,7 +345,7 @@ public class UIManager : MonoBehaviour
         MakeBtn(pausePanel.transform, "OPCIONES",       new Vector2(0f, startY - spacing*3), new Vector2(btnW, btnH), ShowOptions);
     }
 
-    // ─── UI PRIMITIVES ─────────────────────────────────────────────────────
+    // ─── UI PRIMITIVOS ─────────────────────────────────────────────────────
     private GameObject MakeOverlay(string name, int order)
     {
         GameObject go = new GameObject(name);
@@ -316,7 +412,7 @@ public class UIManager : MonoBehaviour
         go.transform.SetParent(parent, false);
         RectTransform rt = go.AddComponent<RectTransform>();
         rt.anchorMin = new Vector2(0.5f, 0.5f); rt.anchorMax = new Vector2(0.5f, 0.5f);
-        rt.pivot = new Vector2(0.5f, 0.5f); rt.anchoredPosition = pos; rt.sizeDelta = new Vector2(420f, 1f);
+        rt.pivot = new Vector2(0.5f, 0.5f); rt.anchoredPosition = pos; rt.sizeDelta = new Vector2(500f, 1f);
         go.AddComponent<Image>().color = new Color(1f, 1f, 1f, 0.3f);
     }
 
@@ -355,15 +451,14 @@ public class UIManager : MonoBehaviour
         t.color = new Color(0.08f, 0.08f, 0.12f, 1f);
     }
 
-    // Slider row centered: total unit width = 160 (label) + 20 (gap) + 340 (slider) = 520px → center offset = -260
+    // Fila de slider: ancho total = 160 (label) + 20 (gap) + 320 (slider) = 500px
     private void MakeSliderRow(Transform parent, string labelText, Vector2 pos,
         System.Action<float> onChange, System.Func<float> getValue)
     {
         const float labelW = 160f, sliderW = 320f, gap = 20f;
-        float totalW = labelW + gap + sliderW;
+        float totalW   = labelW + gap + sliderW;
         float leftEdge = -totalW / 2f;
 
-        // Label
         GameObject lGO = new GameObject("Lbl_" + labelText);
         lGO.transform.SetParent(parent, false);
         RectTransform lr = lGO.AddComponent<RectTransform>();
@@ -375,7 +470,6 @@ public class UIManager : MonoBehaviour
         lt.alignment = TextAlignmentOptions.Right;
         lt.color = Color.white;
 
-        // Slider
         GameObject sGO = new GameObject("Slider_" + labelText);
         sGO.transform.SetParent(parent, false);
         RectTransform sr = sGO.AddComponent<RectTransform>();
@@ -385,13 +479,11 @@ public class UIManager : MonoBehaviour
         Slider slider = sGO.AddComponent<Slider>();
         slider.minValue = 0f; slider.maxValue = 1f;
 
-        // BG
         GameObject bg = new GameObject("BG"); bg.transform.SetParent(sGO.transform, false);
         RectTransform bgr = bg.AddComponent<RectTransform>();
         bgr.anchorMin = Vector2.zero; bgr.anchorMax = Vector2.one; bgr.sizeDelta = Vector2.zero;
         bg.AddComponent<Image>().color = new Color(1f, 1f, 1f, 0.2f);
 
-        // Fill
         GameObject fa = new GameObject("FA"); fa.transform.SetParent(sGO.transform, false);
         RectTransform far = fa.AddComponent<RectTransform>();
         far.anchorMin = Vector2.zero; far.anchorMax = Vector2.one;
@@ -402,7 +494,6 @@ public class UIManager : MonoBehaviour
         fill.AddComponent<Image>().color = Color.white;
         slider.fillRect = fr;
 
-        // Handle
         GameObject ha = new GameObject("HA"); ha.transform.SetParent(sGO.transform, false);
         RectTransform har = ha.AddComponent<RectTransform>();
         har.anchorMin = Vector2.zero; har.anchorMax = Vector2.one;
