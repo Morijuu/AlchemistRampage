@@ -134,7 +134,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      MarcoBarraVida_0: 836643587579427864
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

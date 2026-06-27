@@ -134,7 +134,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      DisparoZombie1_0: 2078357720663772303
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
