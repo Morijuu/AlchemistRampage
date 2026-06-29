@@ -56,7 +56,7 @@ public class BulletInventory : MonoBehaviour
 
         if (fusedData == null || incomingData == null) return;
 
-        shotCount += incomingData.shotsPerPickup;
+        shotCount += incomingData.shotsPerPickup + XPSystem.FusionBonusShots;
         activeData = fusedData;
         Debug.Log($"Fusion aplicada. activeData ahora: {activeData.name} (bulletType={activeData.bulletType})");
     }

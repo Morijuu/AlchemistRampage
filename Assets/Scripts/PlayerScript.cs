@@ -186,7 +186,7 @@ void Shoot()
 
     float cooldown =
         1f /
-        inventory.ActiveData.fireRate;
+        (inventory.ActiveData.fireRate * (XPSystem.Instance != null ? XPSystem.FireRateMultiplier : 1f));
 
     if (
         Time.time -
@@ -267,7 +267,10 @@ void Shoot()
             endPoint = hit.point;
             Health health = hit.collider.GetComponent<Health>();
             if (health != null)
-                health.TakeDamage(data.damage, transform);
+            {
+                int dmg = Mathf.RoundToInt(data.damage * (XPSystem.Instance != null ? XPSystem.DamageMultiplier : 1f));
+                health.TakeDamage(dmg, transform);
+            }
             break;
         }
 

@@ -23,6 +23,9 @@ public class Health : MonoBehaviour
     [Header("Player")]
     [SerializeField] private bool isPlayer = false;
 
+    [Header("XP")]
+    [SerializeField] public int xpReward = 30;
+
     [Header("Drops")]
     [SerializeField] private GameObject[] bulletPickupPrefabs;
     [SerializeField] private bool dropsPickup = true;
@@ -193,6 +196,7 @@ if (isPlayer)
         if (CompareTag("Enemy"))
         {
             AudioManager.Instance?.PlayZombieDeath();
+            XPSystem.Instance?.AddXP(xpReward);
         }
 
         // CAJA
