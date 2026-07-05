@@ -86,6 +86,8 @@ public class BulletScript : MonoBehaviour
             if (health != null)
             {
                 health.TakeDamage(data.damage, transform);
+                if (!isEnemyBullet)
+                    GameStats.Instance?.AddDamageDealt(data.damage);
 
                 pierceCount++;
 
@@ -102,6 +104,8 @@ public class BulletScript : MonoBehaviour
         if (health != null)
         {
             health.TakeDamage(data.damage, transform);
+            if (!isEnemyBullet)
+                GameStats.Instance?.AddDamageDealt(data.damage);
             HandleHitEffect(transform.position, other);
 
             Explode();
@@ -159,7 +163,11 @@ public class BulletScript : MonoBehaviour
             Health health = hit.collider.GetComponent<Health>();
 
             if (health != null)
+            {
                 health.TakeDamage(data.damage, transform);
+                if (!isEnemyBullet)
+                    GameStats.Instance?.AddDamageDealt(data.damage);
+            }
 
             bounceCount++;
 

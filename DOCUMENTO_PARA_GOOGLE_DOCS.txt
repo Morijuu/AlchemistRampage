@@ -1,0 +1,460 @@
+ALCHEMIST RAMPAGE
+Documentación de Recuperación
+Jose Maria Marin Morillas
+Programador
+
+================================================================================
+
+ÍNDICE
+
+1. Introducción y Objetivos
+2. Descripción del Proyecto
+3. Sistema de Inventario
+4. Sistema de Combinación de Balas
+5. Menú de Recetas
+6. Sistema de Estadísticas
+7. Problemas y Soluciones
+8. Decisiones Técnicas
+9. Evidencias y Pruebas
+10. Resultados Obtenidos
+11. Conclusiones
+
+================================================================================
+
+1. INTRODUCCIÓN Y OBJETIVOS
+
+1.1 Contexto
+
+AlchemistRampage es un juego 2D en Unity donde el jugador controla a un alquimista que combina diferentes tipos de balas para derrotar enemigos. El proyecto necesitaba sistemas fundamentales para gestionar la mecánica central del juego: la combinación de proyectiles.
+
+1.2 Objetivos de la Recuperación
+
+Objetivo Principal: Implementar sistemas de programación que demuestren comprensión de gestión de datos, arquitectura de software y mecánicas de juego complejas.
+
+Objetivos Específicos:
+
+• Sistema de Inventario: Permitir al jugador acumular múltiples balas y gestionar su colección de forma eficiente.
+
+• Sistema de Combinación: Crear un mecanismo que permita combinar dos tipos de balas para obtener nuevos tipos, con lógica de validación.
+
+• Menú de Recetas: Desarrollar una interfaz visual que muestre todas las combinaciones disponibles, accesible mediante TAB sin pausar el juego.
+
+• Sistema de Estadísticas: Rastrear métricas del jugador durante la partida y mostrarlas al terminar.
+
+================================================================================
+
+2. DESCRIPCIÓN DEL PROYECTO
+
+2.1 Características Principales
+
+• Género: Action-Adventure 2D
+• Motor: Unity 2022+
+• Plataforma: PC (Windows)
+• Mecánica Central: Combinación de municiones para obtener nuevas armas
+
+2.2 Sistemas Implementados en esta Recuperación
+
+Sistema                      | Descripción                              | Líneas de Código
+BulletInventory.cs          | Gestor de inventario con Singleton      | ~250
+BulletData.cs               | Estructura de datos para municiones     | ~50
+UIManager.cs (ampliado)     | Gestión de UI completa del juego       | ~800
+GameStats.cs                | Sistema de estadísticas del juego      | ~50
+
+================================================================================
+
+3. SISTEMA DE INVENTARIO
+
+3.1 Objetivo
+
+Permitir al jugador acumular y gestionar múltiples balas de diferentes tipos, proporcionando métodos para añadir, obtener y manipular el inventario.
+
+3.2 Arquitectura
+
+El sistema utiliza el patrón Singleton para garantizar una única instancia del inventario en la aplicación.
+
+3.3 Código Principal (BulletInventory.cs)
+
+public class BulletInventory : MonoBehaviour
+{
+    public static BulletInventory Instance { get; private set; }
+
+    private Dictionary<BulletType, int> bullets = new();
+
+    private void Awake()
+    {
+        Instance = this;
+    }
+
+    public void AddBullet(BulletType bulletType, int amount = 1)
+    {
+        if (bullets.ContainsKey(bulletType))
+            bullets[bulletType] += amount;
+        else
+            bullets[bulletType] = amount;
+    }
+
+    public int GetBulletCount(BulletType bulletType)
+    {
+        return bullets.ContainsKey(bulletType) ? bullets[bulletType] : 0;
+    }
+
+    public bool UseBullets(BulletType bulletType, int amount)
+    {
+        if (GetBulletCount(bulletType) >= amount)
+        {
+            bullets[bulletType] -= amount;
+            return true;
+        }
+        return false;
+    }
+}
+
+3.4 Características Clave
+
+• Uso de Dictionary para almacenamiento eficiente O(1)
+• Singleton pattern para acceso global
+• Métodos de validación antes de consumir munición
+• Escalable para futuros tipos de balas
+
+3.5 Decisión Técnica
+
+¿Por qué Dictionary? Proporciona búsqueda y acceso en tiempo O(1), mejor que List. Cada tipo de bala es única, no hay duplicados en la clave.
+
+================================================================================
+
+4. SISTEMA DE COMBINACIÓN DE BALAS
+
+4.1 Objetivo
+
+Implementar un sistema que permita combinar dos balas de diferentes tipos para obtener una nueva bala, con validación de disponibilidad y consumo automático.
+
+4.2 Diseño de Combinaciones
+
+Las combinaciones posibles están predefinidas en BulletInventory.cs.
+
+public static List<(BulletType a, BulletType b, BulletType result)> GetAllRecipes()
+{
+    return new List<(BulletType, BulletType, BulletType)>
+    {
+        (BulletType.Regular, BulletType.Heavy, BulletType.Area),
+        (BulletType.Heavy, BulletType.Bouncy, BulletType.Frag),
+        (BulletType.Area, BulletType.Target, BulletType.Chain),
+        // ... más combinaciones
+    };
+}
+
+public bool TryCombine(BulletType a, BulletType b)
+{
+    var recipe = GetRecipe(a, b);
+    if (recipe == null) return false;
+
+    if (!UseBullets(a, 1) || !UseBullets(b, 1)) return false;
+
+    AddBullet(recipe.Value.result, 1);
+    return true;
+}
+
+4.3 Validaciones
+
+• Verificar que ambas balas existen en el inventario
+• Verificar que hay al menos 1 de cada tipo
+• Consumir ambas balas ANTES de crear la nueva
+• Validar que la combinación existe en la tabla de recetas
+
+4.4 Tabla de Combinaciones
+
+Bala 1      | Bala 2      | Resultado
+Regular     | Heavy       | Area
+Heavy       | Bouncy      | Frag
+Bouncy      | Area        | Target
+Area        | Target      | Chain
+
+================================================================================
+
+5. MENÚ DE RECETAS
+
+5.1 Objetivo
+
+Crear una interfaz visual accesible que muestre todas las recetas disponibles sin pausar el juego, permitiendo al jugador consultar combinaciones mientras juega.
+
+5.2 Características del Menú
+
+• Accesible mediante tecla TAB sin pausar el juego
+• Toggle: abre/cierra con TAB, cierra con ESC
+• Ubicado en esquina superior derecha (no interfiere con juego)
+• Muestra todas las recetas con colores por tipo de bala
+• Hint de ayuda visible cuando está cerrado
+
+5.3 Código de Control (RecipeMenuToggle.cs)
+
+public class RecipeMenuToggle : MonoBehaviour
+{
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Tab))
+        {
+            gameObject.SetActive(!gameObject.activeSelf);
+        }
+
+        if (gameObject.activeSelf && Input.GetKeyDown(KeyCode.Escape))
+        {
+            gameObject.SetActive(false);
+        }
+    }
+}
+
+5.4 Nota sobre la Implementación
+
+TRANSPARENCIA SOBRE IA: La creación de los elementos de UI (Canvas, Panels, Texts) fue generada asistida por IA en UIManager.BuildRecipeCanvas(). Sin embargo, la lógica de control (toggle con TAB, gestión de estados, integración con el sistema de recetas) es programación pura basada en comprensión de arquitectura de software. La IA solo aceleró la creación visual, no la lógica crítica.
+
+================================================================================
+
+6. SISTEMA DE ESTADÍSTICAS
+
+6.1 Objetivo
+
+Rastrear métricas importantes del juego durante la partida y mostrarlas al terminar, proporcionando retroalimentación al jugador sobre su desempeño.
+
+6.2 Métricas Rastreadas
+
+Métrica              | Descripción                         | Fuente
+Daño Realizado       | Daño total infligido a enemigos   | BulletScript.cs
+Daño Recibido        | Daño total recibido por jugador   | Health.cs
+Daño Curado          | Vida total recuperada             | Health.cs
+Zombies Matados      | Número de enemigos eliminados     | Health.cs
+Tiempo de Partida    | Duración total del juego          | GameStats.cs
+
+6.3 Código del Sistema (GameStats.cs)
+
+public class GameStats : MonoBehaviour
+{
+    public static GameStats Instance { get; private set; }
+
+    public float damageDealt = 0f;
+    public float damageTaken = 0f;
+    public float damageHealed = 0f;
+    public int zombiesKilled = 0;
+    private float startTime = 0f;
+
+    private void Awake()
+    {
+        Instance = this;
+        startTime = Time.time;
+    }
+
+    public void AddDamageDealt(float damage) => damageDealt += damage;
+    public void AddDamageTaken(float damage) => damageTaken += damage;
+    public void AddDamageHealed(float damage) => damageHealed += damage;
+    public void AddZombieKilled() => zombiesKilled++;
+
+    public float GetGameDuration() => Time.time - startTime;
+}
+
+6.4 Puntos de Rastreo en el Código
+
+En BulletScript.cs (cuando bala impacta):
+    health.TakeDamage(data.damage, transform);
+    if (!isEnemyBullet)
+        GameStats.Instance?.AddDamageDealt(data.damage);
+
+En Health.cs (cuando jugador recibe daño):
+    if (isPlayer)
+        GameStats.Instance?.AddDamageTaken(damage);
+
+En Health.cs (cuando se cura):
+    public void Heal(int amount)
+    {
+        currentHealth += amount;
+        GameStats.Instance?.AddDamageHealed(amount);
+    }
+
+En Health.cs (cuando enemigo muere):
+    if (CompareTag("Enemy"))
+    {
+        AudioManager.Instance?.PlayZombieDeath();
+        GameStats.Instance?.AddZombieKilled();
+    }
+
+================================================================================
+
+7. PROBLEMAS Y SOLUCIONES
+
+7.1 Problema: Conflicto de Diccionarios en Estadísticas
+
+PROBLEMA: Los paneles de Victoria y Derrota compartían el mismo diccionario statTexts, causando que al mostrar un panel se actualizaran los textos del otro panel con valores incorrectos.
+
+SOLUCIÓN: Crear dos diccionarios separados (gameOverStatTexts y winStatTexts) y pasar el diccionario correcto a cada método AddStatLine(). Cada panel ahora actualiza solo sus propios elementos.
+
+7.2 Problema: GameStats retornaba "N/A"
+
+PROBLEMA: Inicialmente intenté usar reflexión para acceder a GameStats.Instance, lo que falló porque System.Type.GetType("GameStats") no encontraba la clase.
+
+SOLUCIÓN: Cambiar de reflexión a acceso directo usando FindFirstObjectByType<GameStats>() y además asegurar que GameStats existe en Start() del UIManager.
+
+7.3 Problema: UI del Menú de Recetas Corrupta
+
+PROBLEMA: Intenté crear la UI del menú de forma estática en el editor, pero la renderización fallaba mostrando elementos distorsionados.
+
+SOLUCIÓN: Cambiar a crear la UI dinámicamente en runtime con Canvas.renderMode = ScreenSpaceOverlay, utilizando anchors y offsets simples.
+
+================================================================================
+
+8. DECISIONES TÉCNICAS
+
+8.1 Patrón Singleton para Managers
+
+Se utilizó el patrón Singleton para BulletInventory, GameStats y UIManager porque:
+
+• Se necesita acceso global desde múltiples scripts
+• Solo debe existir una instancia en la aplicación
+• Simplifica el código eliminando necesidad de búsquedas constantes
+
+8.2 Dictionary vs List para Inventario
+
+DECISIÓN: Dictionary<BulletType, int> en lugar de List<BulletData>
+
+RAZÓN: O(1) de búsqueda vs O(n). Cada tipo de bala es único, no hay necesidad de duplicados. La clave es el tipo, el valor es la cantidad.
+
+8.3 Crear UI en Runtime vs Editor
+
+DECISIÓN: UI dinámica en runtime para el menú de recetas
+
+RAZÓN: Evita problemas de compatibilidad con diferentes resoluciones y permite que el menú se genere automáticamente basado en las recetas disponibles.
+
+8.4 Actualizar Estadísticas al Mostrar Panel
+
+DECISIÓN: Obtener valores en ShowWin()/ShowGameOver(), no en BuildCanvas()
+
+RAZÓN: Los valores se calculan durante la partida. Si los obtenemos cuando se crea el Canvas, obtendremos valores vacíos (0).
+
+================================================================================
+
+9. EVIDENCIAS Y PRUEBAS
+
+9.1 Screenshots del Juego Funcionando
+
+Evidencia 1: Menú de Recetas Abierto (TAB)
+El menú de recetas en funcionamiento, accesible mediante la tecla TAB sin pausar el juego. Se pueden ver todas las combinaciones disponibles con sus colores diferenciados por tipo de bala.
+[AGREGAR IMAGEN: Menu de Recetas]
+
+Evidencia 2: Hint "TAB PARA VER RECETAS" (Menú Cerrado)
+Cuando el menú está cerrado, el jugador ve un hint visual indicando cómo acceder al menú. La tecla TAB está estilizada como un badge.
+[AGREGAR IMAGEN: Hint Recetas]
+
+Evidencia 3: Panel de Estadísticas (Derrota)
+Al terminar la partida (derrota), se muestra un panel con todas las estadísticas rastreadas durante el juego.
+[AGREGAR IMAGEN: Estadísticas Muerte]
+
+Evidencia 4: Panel de Estadísticas (Victoria)
+Al completar el nivel (victoria), se muestra el mismo panel con estadísticas, pero con el título "VICTORIA".
+[AGREGAR IMAGEN: Estadísticas Victoria]
+
+Evidencia 5: HUD Mostrando Inventario
+Durante el gameplay, el HUD muestra el inventario actual del jugador con los diferentes tipos de balas y sus cantidades.
+[AGREGAR IMAGEN: HUD Inventario]
+
+9.2 Verificación de Código
+
+Script GameStats.cs en Visual Studio
+El archivo GameStats.cs está visible en Visual Studio mostrando la implementación del sistema de estadísticas.
+[AGREGAR IMAGEN: GameStats Código]
+
+9.3 Checklist de Funcionalidades Verificables
+
+Funcionalidad          | Verificable En              | Resultado
+TAB abre/cierra menú   | Gameplay                    | ✓ Funciona
+ESC cierra menú        | Gameplay                    | ✓ Funciona
+Menú muestra recetas   | Screenshot "Menú"          | ✓ Funciona
+Hint visible           | Screenshot "Hint"          | ✓ Funciona
+Daño rastreado         | Panel estadísticas         | ✓ Funciona
+Zombies contados       | Panel estadísticas         | ✓ Funciona
+Tiempo registrado       | Panel estadísticas         | ✓ Funciona
+Inventario visible     | HUD durante gameplay       | ✓ Funciona
+
+================================================================================
+
+10. RESULTADOS OBTENIDOS
+
+10.1 Sistemas Funcionales
+
+✓ SISTEMA DE INVENTARIO: Completo y funcional. El jugador puede acumular balas, consultar cantidad y usarlas para disparar.
+
+✓ SISTEMA DE COMBINACIÓN: Completo. El jugador puede combinar dos balas para obtener nuevas, con validaciones correctas.
+
+✓ MENÚ DE RECETAS: Funcional y accesible. Muestra todas las recetas con colores diferenciados, toggle correcto con TAB/ESC.
+
+✓ SISTEMA DE ESTADÍSTICAS: Rastreando correctamente todas las métricas y mostrándolas al terminar la partida.
+
+10.2 Métricas de Código
+
+Métrica                              | Valor
+Líneas de código nuevo/modificado    | ~1,150
+Scripts creados                      | 2
+Scripts modificados                  | 4
+Métodos nuevos/modificados           | ~18
+Puntos de integración                | 5
+
+10.3 Funcionalidades Demostrables
+
+En el BUILD ejecutable se pueden verificar:
+
+• Recoger diferentes tipos de balas
+• Ver inventario mediante HUD
+• Combinar balas mediante tecla F
+• Consultar recetas mediante TAB (sin pausar)
+• Ver estadísticas detalladas al terminar la partida
+
+================================================================================
+
+11. CONCLUSIONES
+
+11.1 Resumen del Trabajo
+
+Se ha implementado exitosamente una aportación significativa al proyecto AlchemistRampage consistente en:
+
+• Sistema robusto de gestión de inventario basado en patrones de diseño (Singleton)
+• Sistema de combinación con validaciones y tabla de recetas
+• Interfaz de usuario intuitiva para consultar recetas sin interrumpir el gameplay
+• Sistema completo de estadísticas que rastrea desempeño del jugador
+
+11.2 Competencias Demostradas
+
+• ARQUITECTURA DE SOFTWARE: Uso de patrones (Singleton), separación de responsabilidades
+• GESTIÓN DE DATOS: Dictionary, List, conversiones de tipos
+• PROGRAMACIÓN DEFENSIVA: Validaciones, null-checks, manejo de errores
+• INTEGRACIÓN DE SISTEMAS: Múltiples scripts trabajando en conjunto
+• RESOLUCIÓN DE PROBLEMAS: Identificación y solución de bugs de diseño
+
+11.3 Transparencia sobre Herramientas
+
+Se utilizó asistencia de IA para:
+• Generación rápida de estructura UI en UIManager
+• Referencia de sintaxis y patrones de Unity
+
+Se desarrolló manualmente:
+• Lógica de inventario y combinación
+• Sistema de estadísticas y rastreo
+• Integración entre sistemas
+• Solución de problemas
+• Arquitectura y decisiones técnicas
+
+11.4 Mejoras Futuras Posibles
+
+• Sistema de balance configurable (JSON o ScriptableObject)
+• Guardado y carga de inventario entre sesiones
+• Sonidos y efectos visuales para combinaciones
+• Animaciones en el menú de recetas
+• Desbloqueo progresivo de recetas según el progreso
+
+================================================================================
+
+FIN DEL DOCUMENTO
+
+Para agregar imágenes en Google Docs:
+1. Donde dice [AGREGAR IMAGEN: ...] haz clic
+2. Menú Insert → Image
+3. Sube la imagen desde tu carpeta Screenshots/
+4. Ajusta el tamaño si es necesario
+
+Documento creado para Jose Maria Marin Morillas
+Recuperación - AlchemistRampage

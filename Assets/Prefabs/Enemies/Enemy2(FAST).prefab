@@ -246,7 +246,7 @@ MonoBehaviour:
   - {fileID: 6767887919996392655, guid: 6da0ac2857e518e4c856481bddb11c95, type: 3}
   - {fileID: 4288882998555332803, guid: efe462408dede9c4d851d28351ea66cc, type: 3}
   dropsPickup: 1
-  dropChance: 0.5
+  dropChance: 0.25
   heartPrefab: {fileID: 0}
   heartDropChance: 0.3
 --- !u!114 &8664591899270686052

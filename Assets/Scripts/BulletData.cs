@@ -5,6 +5,7 @@ public class BulletData : ScriptableObject
 {
     public BulletType bulletType;
     public string displayName;
+    public Sprite bulletSprite;
     public int damage = 20;
     public float speed = 15f;
     public float fireRate = 3f;     // disparos por segundo

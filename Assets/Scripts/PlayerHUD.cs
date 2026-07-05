@@ -5,6 +5,9 @@ using UnityEngine.UI;
 
 public class PlayerHUD : MonoBehaviour
 {
+    [Header("Inventory Slots")]
+    [SerializeField] private Image[] slotImages = new Image[3];
+
     [Header("Ammo")]
     [SerializeField] private TMP_Text weaponNameText;
     [SerializeField] private TMP_Text ammoCountText;
@@ -30,8 +33,12 @@ public class PlayerHUD : MonoBehaviour
     private Coroutine healthPulseCoroutine;
     private float baseHealthFontSize;
 
+    private bool uiInitialized = false;
+
     private void Start()
     {
+        InitializeUI();
+
         if (ammoCountText != null)
             baseAmmoFontSize = ammoCountText.fontSize;
 
@@ -39,15 +46,123 @@ public class PlayerHUD : MonoBehaviour
             baseHealthFontSize = healthText.fontSize;
     }
 
+    private void InitializeUI()
+    {
+        if (uiInitialized) return;
+
+        CreateSlots();
+        CreateAmmoUI();
+
+        uiInitialized = true;
+    }
+
+    private void CreateSlots()
+    {
+        for (int i = 0; i < 3; i++)
+        {
+            if (slotImages[i] != null) continue;
+
+            GameObject slotGO = new GameObject($"Slot{i + 1}");
+            slotGO.transform.SetParent(transform, false);
+
+            RectTransform slotRect = slotGO.AddComponent<RectTransform>();
+            slotRect.anchoredPosition = new Vector2(50 + (i * 28), 100);
+            slotRect.anchorMin = Vector2.zero;
+            slotRect.anchorMax = Vector2.zero;
+            slotRect.sizeDelta = new Vector2(20, 20);
+
+            Image slotBg = slotGO.AddComponent<Image>();
+            slotBg.color = new Color(0.15f, 0.15f, 0.15f, 1f);
+            slotBg.raycastTarget = false;
+
+            Outline outline = slotGO.AddComponent<Outline>();
+            outline.effectColor = new Color(0.3f, 0.3f, 0.3f, 1f);
+            outline.effectDistance = new Vector2(1, -1);
+
+            slotImages[i] = slotBg;
+        }
+    }
+
+    private void CreateAmmoUI()
+    {
+        if (weaponNameText == null)
+        {
+            GameObject nameGO = new GameObject("WeaponName");
+            nameGO.transform.SetParent(transform, false);
+            RectTransform nameRect = nameGO.AddComponent<RectTransform>();
+            nameRect.anchoredPosition = new Vector2(50, 30);
+            nameRect.anchorMin = Vector2.zero;
+            nameRect.anchorMax = Vector2.zero;
+            nameRect.sizeDelta = new Vector2(180, 30);
+            weaponNameText = nameGO.AddComponent<TextMeshProUGUI>();
+            weaponNameText.fontSize = 16;
+            weaponNameText.alignment = TextAlignmentOptions.BottomLeft;
+        }
+
+        if (ammoCountText == null)
+        {
+            GameObject ammoGO = new GameObject("AmmoCount");
+            ammoGO.transform.SetParent(transform, false);
+            RectTransform ammoRect = ammoGO.AddComponent<RectTransform>();
+            ammoRect.anchoredPosition = new Vector2(50, 5);
+            ammoRect.anchorMin = Vector2.zero;
+            ammoRect.anchorMax = Vector2.zero;
+            ammoRect.sizeDelta = new Vector2(180, 25);
+            ammoCountText = ammoGO.AddComponent<TextMeshProUGUI>();
+            ammoCountText.fontSize = 14;
+            ammoCountText.alignment = TextAlignmentOptions.TopLeft;
+        }
+    }
+
     private void Update()
     {
+        UpdateSlots();
         UpdateAmmo();
         UpdateHealth();
         UpdateStamina();
     }
 
+    private void UpdateSlots()
+    {
+        BulletInventory inv = BulletInventory.Instance;
+        if (inv == null) return;
+
+        for (int i = 0; i < 3; i++)
+        {
+            if (slotImages[i] == null) continue;
+
+            BulletData data = inv.SlotData[i];
+            bool isActive = (i == inv.ActiveSlot);
+            bool hasAmmo = data != null && inv.SlotCounts[i] > 0;
+
+            if (data != null && data.bulletSprite != null)
+                slotImages[i].sprite = data.bulletSprite;
+            else
+                slotImages[i].sprite = null;
+
+            // Color logic
+            if (!hasAmmo)
+            {
+                // Neutro: sin balas
+                slotImages[i].color = new Color(0.15f, 0.15f, 0.15f, 1f);
+            }
+            else if (isActive)
+            {
+                // Amarillo: seleccionado con balas
+                slotImages[i].color = new Color(0.8f, 0.8f, 0.2f, 1f);
+            }
+            else
+            {
+                // Azul: con balas pero no seleccionado
+                slotImages[i].color = new Color(0.2f, 0.4f, 0.8f, 1f);
+            }
+        }
+    }
+
     private void UpdateAmmo()
     {
+        if (weaponNameText == null || ammoCountText == null) return;
+
         BulletInventory inv = BulletInventory.Instance;
         if (inv == null) return;
 
@@ -58,15 +173,12 @@ public class PlayerHUD : MonoBehaviour
             int shots = inv.ShotCount;
             int perPickup = inv.ActiveData.shotsPerPickup;
 
-            // Nombre con color según tipo
             string nameColor = GetTypeColor(inv.ActiveData.bulletType);
             weaponNameText.text = $"<color={nameColor}><b>{inv.ActiveData.displayName}</b></color>";
 
-            // Color del contador según % restante
             string ammoColor = GetAmmoColor(shots, perPickup);
             ammoCountText.text = $"<color={ammoColor}><b>{shots}</b></color>";
 
-            // Pulso al gastar bala
             if (shots != lastShotCount && lastShotCount != -1)
             {
                 if (pulseCoroutine != null) StopCoroutine(pulseCoroutine);

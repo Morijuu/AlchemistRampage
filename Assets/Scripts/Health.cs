@@ -42,6 +42,10 @@ public class Health : MonoBehaviour
     {
         currentHealth -= damage;
 
+        // Track damage taken
+        if (isPlayer)
+            GameStats.Instance?.AddDamageTaken(damage);
+
         // AUDIO
         if (isPlayer)
         {
@@ -149,6 +153,7 @@ public class Health : MonoBehaviour
     public void Heal(int amount)
     {
         currentHealth += amount;
+        GameStats.Instance?.AddDamageHealed(amount);
 
         currentHealth =
             Mathf.Clamp(
@@ -193,6 +198,7 @@ if (isPlayer)
         if (CompareTag("Enemy"))
         {
             AudioManager.Instance?.PlayZombieDeath();
+            GameStats.Instance?.AddZombieKilled();
         }
 
         // CAJA

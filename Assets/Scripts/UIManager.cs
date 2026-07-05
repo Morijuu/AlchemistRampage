@@ -22,6 +22,12 @@ public class UIManager : MonoBehaviour
     private GameObject optMainPanel;
     private GameObject optVolumePanel;
     private GameObject optControlsPanel;
+    private GameObject recipeCanvas;
+    private GameObject recipeHint;
+    private bool isRecipeOpen = false;
+
+    private System.Collections.Generic.Dictionary<string, TextMeshProUGUI> gameOverStatTexts = new();
+    private System.Collections.Generic.Dictionary<string, TextMeshProUGUI> winStatTexts = new();
 
     private void Awake()
     {
@@ -35,9 +41,14 @@ public class UIManager : MonoBehaviour
         if (gameOverPanel != null) HidePanel(gameOverPanel);
         if (winPanel      != null) HidePanel(winPanel);
 
+        // Ensure GameStats exists
+        if (FindFirstObjectByType<GameStats>() == null)
+            gameObject.AddComponent<GameStats>();
+
         BuildWinCanvas();
         BuildGameOverCanvas();
         BuildOptionsCanvas();
+        BuildRecipeCanvas();
         StylePausePanel();
 
         if (GetComponent<CameraFlash>() == null)
@@ -55,6 +66,14 @@ public class UIManager : MonoBehaviour
 
     private void Update()
     {
+        if (Input.GetKeyDown(KeyCode.Tab) && !IsGameOverShowing())
+        {
+            if (isRecipeOpen)
+                HideRecipe();
+            else
+                ShowRecipe();
+        }
+
         if (Input.GetKeyDown(KeyCode.Escape) && !IsGameOverShowing())
         {
             if (optionsCanvas != null && optionsCanvas.activeSelf)
@@ -91,6 +110,7 @@ public class UIManager : MonoBehaviour
     public void ShowGameOver()
     {
         isGameOver = true;
+        UpdateStats(gameOverStatTexts);
         if (gameOverCanvas != null) gameOverCanvas.SetActive(true);
         AudioManager.Instance?.PlayLose();
         Time.timeScale = 0f;
@@ -99,6 +119,7 @@ public class UIManager : MonoBehaviour
     public void ShowWin()
     {
         isWin = true;
+        UpdateStats(winStatTexts);
         if (winCanvas != null) winCanvas.SetActive(true);
         AudioManager.Instance?.PlayWin();
         Time.timeScale = 0f;
@@ -137,6 +158,27 @@ public class UIManager : MonoBehaviour
     public void HideOptions()
     {
         if (optionsCanvas != null) optionsCanvas.SetActive(false);
+    }
+
+    // ─── RECIPE MENU ───────────────────────────────────────────────────────
+    public void ShowRecipe()
+    {
+        if (recipeCanvas != null)
+        {
+            recipeCanvas.SetActive(true);
+            if (recipeHint != null) recipeHint.SetActive(false);
+            isRecipeOpen = true;
+        }
+    }
+
+    public void HideRecipe()
+    {
+        if (recipeCanvas != null)
+        {
+            recipeCanvas.SetActive(false);
+            if (recipeHint != null) recipeHint.SetActive(true);
+            isRecipeOpen = false;
+        }
     }
 
     private void ShowOptionsMain()
@@ -180,17 +222,24 @@ public class UIManager : MonoBehaviour
         winCanvas = MakeOverlay("WinOverlay", 250);
         MakeFullRect(winCanvas.transform, new Color(0f, 0f, 0f, 0.82f));
 
-        GameObject card = MakeCard(winCanvas.transform, new Vector2(580f, 380f));
-        MakeTitle(card.transform,    "VICTORIA",               new Vector2(0f, 95f),  new Vector2(540f, 80f));
-        MakeSubtitle(card.transform, "Has completado el nivel",new Vector2(0f, 38f),  new Vector2(500f, 32f));
-        MakeDivider(card.transform, new Vector2(0f, 5f));
+        GameObject card = MakeCard(winCanvas.transform, new Vector2(650f, 550f));
+        MakeTitle(card.transform,    "VICTORIA",               new Vector2(0f, 230f),  new Vector2(540f, 80f));
+        MakeSubtitle(card.transform, "Has completado el nivel",new Vector2(0f, 168f),  new Vector2(500f, 32f));
+        MakeDivider(card.transform, new Vector2(0f, 135f));
+
+        // Stats
+        AddStatLine(card.transform, "Daño realizado:", "damageDealt", new Vector2(-150f, 80f), winStatTexts);
+        AddStatLine(card.transform, "Daño recibido:", "damageTaken", new Vector2(-150f, 40f), winStatTexts);
+        AddStatLine(card.transform, "Daño curado:", "damageHealed", new Vector2(-150f, 0f), winStatTexts);
+        AddStatLine(card.transform, "Zombies matados:", "zombiesKilled", new Vector2(-150f, -40f), winStatTexts);
+        AddStatLine(card.transform, "Tiempo:", "time", new Vector2(-150f, -80f), winStatTexts);
 
         if (isLevel2)
-            MakeBtn(card.transform, "JUGAR DE NUEVO", new Vector2(0f, -62f),  new Vector2(300f, 52f), Retry);
+            MakeBtn(card.transform, "JUGAR DE NUEVO", new Vector2(0f, -160f),  new Vector2(300f, 52f), Retry);
         else
-            MakeBtn(card.transform, "BONUS LEVEL",    new Vector2(0f, -62f),  new Vector2(300f, 52f), BonusLevel);
+            MakeBtn(card.transform, "BONUS LEVEL",    new Vector2(0f, -160f),  new Vector2(300f, 52f), BonusLevel);
 
-        MakeBtn(card.transform, "MENÚ PRINCIPAL", new Vector2(0f, -128f), new Vector2(300f, 52f), GoToMenu);
+        MakeBtn(card.transform, "MENÚ PRINCIPAL", new Vector2(0f, -226f), new Vector2(300f, 52f), GoToMenu);
         winCanvas.SetActive(false);
     }
 
@@ -200,12 +249,20 @@ public class UIManager : MonoBehaviour
         gameOverCanvas = MakeOverlay("GameOverOverlay", 250);
         MakeFullRect(gameOverCanvas.transform, new Color(0f, 0f, 0f, 0.82f));
 
-        GameObject card = MakeCard(gameOverCanvas.transform, new Vector2(580f, 380f));
-        MakeTitle(card.transform,    "HAS MUERTO",                    new Vector2(0f, 95f), new Vector2(540f, 80f));
-        MakeSubtitle(card.transform, "No lo has conseguido esta vez", new Vector2(0f, 38f), new Vector2(500f, 32f));
-        MakeDivider(card.transform, new Vector2(0f, 5f));
-        MakeBtn(card.transform, "REINTENTAR",     new Vector2(0f, -62f),  new Vector2(300f, 52f), Retry);
-        MakeBtn(card.transform, "MENÚ PRINCIPAL", new Vector2(0f, -128f), new Vector2(300f, 52f), GoToMenu);
+        GameObject card = MakeCard(gameOverCanvas.transform, new Vector2(650f, 550f));
+        MakeTitle(card.transform,    "HAS MUERTO",                    new Vector2(0f, 230f), new Vector2(540f, 80f));
+        MakeSubtitle(card.transform, "No lo has conseguido esta vez", new Vector2(0f, 168f), new Vector2(500f, 32f));
+        MakeDivider(card.transform, new Vector2(0f, 135f));
+
+        // Stats
+        AddStatLine(card.transform, "Daño realizado:", "damageDealt", new Vector2(-150f, 80f), gameOverStatTexts);
+        AddStatLine(card.transform, "Daño recibido:", "damageTaken", new Vector2(-150f, 40f), gameOverStatTexts);
+        AddStatLine(card.transform, "Daño curado:", "damageHealed", new Vector2(-150f, 0f), gameOverStatTexts);
+        AddStatLine(card.transform, "Zombies matados:", "zombiesKilled", new Vector2(-150f, -40f), gameOverStatTexts);
+        AddStatLine(card.transform, "Tiempo:", "time", new Vector2(-150f, -80f), gameOverStatTexts);
+
+        MakeBtn(card.transform, "REINTENTAR",     new Vector2(0f, -160f),  new Vector2(300f, 52f), Retry);
+        MakeBtn(card.transform, "MENÚ PRINCIPAL", new Vector2(0f, -226f), new Vector2(300f, 52f), GoToMenu);
         gameOverCanvas.SetActive(false);
     }
 
@@ -505,5 +562,195 @@ public class UIManager : MonoBehaviour
 
         slider.SetValueWithoutNotify(getValue());
         slider.onValueChanged.AddListener(v => onChange(v));
+    }
+
+    // ─── RECIPE CANVAS ─────────────────────────────────────────────────────
+    private void BuildRecipeCanvas()
+    {
+        recipeCanvas = MakeOverlay("RecipeOverlay", 240);
+
+        GameObject container = new GameObject("Container");
+        container.transform.SetParent(recipeCanvas.transform, false);
+        RectTransform containerRT = container.AddComponent<RectTransform>();
+        containerRT.anchorMin = new Vector2(1f, 1f);
+        containerRT.anchorMax = new Vector2(1f, 1f);
+        containerRT.pivot = new Vector2(1f, 1f);
+        containerRT.anchoredPosition = new Vector2(-30f, -30f);
+        containerRT.sizeDelta = new Vector2(350f, 700f);
+
+        // Title
+        GameObject titleGO = new GameObject("Title");
+        titleGO.transform.SetParent(container.transform, false);
+        RectTransform titleRT = titleGO.AddComponent<RectTransform>();
+        titleRT.anchorMin = new Vector2(1f, 1f);
+        titleRT.anchorMax = new Vector2(1f, 1f);
+        titleRT.pivot = new Vector2(1f, 1f);
+        titleRT.anchoredPosition = Vector2.zero;
+        titleRT.sizeDelta = new Vector2(300f, 50f);
+
+        TextMeshProUGUI titleText = titleGO.AddComponent<TextMeshProUGUI>();
+        titleText.text = "RECETAS";
+        titleText.fontSize = 24f;
+        titleText.fontStyle = FontStyles.Bold;
+        titleText.alignment = TextAlignmentOptions.TopRight;
+        titleText.color = Color.white;
+
+        // Recipes list
+        PopulateRecipes(container.transform);
+
+        recipeCanvas.SetActive(false);
+
+        // Create hint canvas
+        BuildRecipeHint();
+    }
+
+    private void BuildRecipeHint()
+    {
+        recipeHint = MakeOverlay("RecipeHintOverlay", 235);
+
+        GameObject hintContainer = new GameObject("HintContainer");
+        hintContainer.transform.SetParent(recipeHint.transform, false);
+        RectTransform hintRT = hintContainer.AddComponent<RectTransform>();
+        hintRT.anchorMin = new Vector2(1f, 1f);
+        hintRT.anchorMax = new Vector2(1f, 1f);
+        hintRT.pivot = new Vector2(1f, 1f);
+        hintRT.anchoredPosition = new Vector2(-30f, -30f);
+        hintRT.sizeDelta = new Vector2(350f, 100f);
+
+        // Tab key badge
+        GameObject tabKeyGO = new GameObject("TabKey");
+        tabKeyGO.transform.SetParent(hintContainer.transform, false);
+        RectTransform tabKeyRT = tabKeyGO.AddComponent<RectTransform>();
+        tabKeyRT.anchorMin = new Vector2(1f, 1f);
+        tabKeyRT.anchorMax = new Vector2(1f, 1f);
+        tabKeyRT.pivot = new Vector2(1f, 0.5f);
+        tabKeyRT.anchoredPosition = new Vector2(-10f, -25f);
+        tabKeyRT.sizeDelta = new Vector2(50f, 28f);
+
+        Image tabKeyImg = tabKeyGO.AddComponent<Image>();
+        tabKeyImg.color = new Color(0.18f, 0.18f, 0.25f, 1f);
+
+        GameObject tabKeyLbl = new GameObject("Lbl");
+        tabKeyLbl.transform.SetParent(tabKeyGO.transform, false);
+        RectTransform tabKeyLblRT = tabKeyLbl.AddComponent<RectTransform>();
+        tabKeyLblRT.anchorMin = Vector2.zero;
+        tabKeyLblRT.anchorMax = Vector2.one;
+        tabKeyLblRT.sizeDelta = Vector2.zero;
+
+        TextMeshProUGUI tabKeyText = tabKeyLbl.AddComponent<TextMeshProUGUI>();
+        tabKeyText.text = "TAB";
+        tabKeyText.fontSize = 12f;
+        tabKeyText.fontStyle = FontStyles.Bold;
+        tabKeyText.alignment = TextAlignmentOptions.Center;
+        tabKeyText.color = new Color(0.95f, 0.82f, 0.4f, 1f);
+
+        // Text "PARA VER RECETAS"
+        GameObject textGO = new GameObject("Text");
+        textGO.transform.SetParent(hintContainer.transform, false);
+        RectTransform textRT = textGO.AddComponent<RectTransform>();
+        textRT.anchorMin = new Vector2(1f, 1f);
+        textRT.anchorMax = new Vector2(1f, 1f);
+        textRT.pivot = new Vector2(1f, 0.5f);
+        textRT.anchoredPosition = new Vector2(-70f, -25f);
+        textRT.sizeDelta = new Vector2(200f, 50f);
+
+        TextMeshProUGUI hintText = textGO.AddComponent<TextMeshProUGUI>();
+        hintText.text = "PARA VER\nRECETAS";
+        hintText.fontSize = 14f;
+        hintText.fontStyle = FontStyles.Bold;
+        hintText.alignment = TextAlignmentOptions.BottomRight;
+        hintText.color = new Color(0.8f, 0.8f, 0.8f, 1f);
+
+        recipeHint.SetActive(true);
+    }
+
+    private void PopulateRecipes(Transform parent)
+    {
+        System.Collections.Generic.List<(BulletType a, BulletType b, BulletType result)> recipes = BulletInventory.GetAllRecipes();
+
+        float startY = -60f;
+        float rowHeight = 35f;
+        int index = 0;
+
+        foreach (var recipe in recipes)
+        {
+            float yPos = startY - (index * rowHeight);
+            string aColor = GetRecipeColor(recipe.a);
+            string bColor = GetRecipeColor(recipe.b);
+            string resultColor = GetRecipeColor(recipe.result);
+            string recipeText = $"<color={aColor}>{recipe.a}</color> + <color={bColor}>{recipe.b}</color>\n= <color={resultColor}>{recipe.result}</color>";
+
+            MakeRecipeRow(parent, recipeText, new Vector2(0f, yPos));
+            index++;
+        }
+    }
+
+    private void MakeRecipeRow(Transform parent, string text, Vector2 pos)
+    {
+        GameObject go = new GameObject("RecipeRow");
+        go.transform.SetParent(parent, false);
+        RectTransform rt = go.AddComponent<RectTransform>();
+        rt.anchorMin = new Vector2(1f, 1f);
+        rt.anchorMax = new Vector2(1f, 1f);
+        rt.pivot = new Vector2(1f, 1f);
+        rt.anchoredPosition = pos;
+        rt.sizeDelta = new Vector2(320f, 60f);
+
+        TextMeshProUGUI t = go.AddComponent<TextMeshProUGUI>();
+        t.text = text;
+        t.fontSize = 13f;
+        t.alignment = TextAlignmentOptions.TopRight;
+        t.color = Color.white;
+    }
+
+    private string GetRecipeColor(BulletType type)
+    {
+        return type switch
+        {
+            BulletType.Regular => "#DDDDDD",
+            BulletType.Heavy => "#FF8800",
+            BulletType.Bouncy => "#00DDFF",
+            BulletType.Area => "#88FF44",
+            BulletType.Frag => "#FFEE00",
+            BulletType.Target => "#CC88FF",
+            BulletType.Chain => "#44AAFF",
+            BulletType.Piercing => "#FF4444",
+            _ => "#FFFFFF"
+        };
+    }
+
+    // ─── STATS DISPLAY ────────────────────────────────────────────────────
+    private void AddStatLine(Transform parent, string label, string statKey, Vector2 pos, System.Collections.Generic.Dictionary<string, TextMeshProUGUI> statDict)
+    {
+        GameObject statGO = new GameObject("Stat_" + statKey);
+        statGO.transform.SetParent(parent, false);
+        RectTransform statRT = statGO.AddComponent<RectTransform>();
+        statRT.anchorMin = new Vector2(0.5f, 0.5f); statRT.anchorMax = new Vector2(0.5f, 0.5f);
+        statRT.pivot = new Vector2(0.5f, 0.5f); statRT.anchoredPosition = pos; statRT.sizeDelta = new Vector2(500f, 30f);
+
+        TextMeshProUGUI statText = statGO.AddComponent<TextMeshProUGUI>();
+        statText.text = $"{label} <color=#FFFF00>--</color>";
+        statText.fontSize = 16f;
+        statText.alignment = TextAlignmentOptions.Left;
+        statText.color = Color.white;
+
+        statDict[statKey] = statText;
+    }
+
+    private void UpdateStats(System.Collections.Generic.Dictionary<string, TextMeshProUGUI> statDict)
+    {
+        GameStats stats = FindFirstObjectByType<GameStats>();
+        if (stats == null) return;
+
+        if (statDict.ContainsKey("damageDealt"))
+            statDict["damageDealt"].text = $"Daño realizado: <color=#FFFF00>{((int)stats.damageDealt)}</color>";
+        if (statDict.ContainsKey("damageTaken"))
+            statDict["damageTaken"].text = $"Daño recibido: <color=#FFFF00>{((int)stats.damageTaken)}</color>";
+        if (statDict.ContainsKey("damageHealed"))
+            statDict["damageHealed"].text = $"Daño curado: <color=#FFFF00>{((int)stats.damageHealed)}</color>";
+        if (statDict.ContainsKey("zombiesKilled"))
+            statDict["zombiesKilled"].text = $"Zombies matados: <color=#FFFF00>{stats.zombiesKilled}</color>";
+        if (statDict.ContainsKey("time"))
+            statDict["time"].text = $"Tiempo: <color=#FFFF00>{stats.GetFormattedTime(stats.GetGameDuration())}</color>";
     }
 }

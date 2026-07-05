@@ -1,0 +1,98 @@
+GUÍA DE CAPTURAS DE PANTALLA - DOCUMENTACIÓN DE RECUPERACIÓN
+============================================================
+
+Para completar la documentación, debes tomar los siguientes screenshots y guardarlos como imágenes:
+
+1. CAPTURA DEL MENÚ DE RECETAS (TAB)
+   - Ubicación en documento: Sección 5 "Menú de Recetas"
+   - Qué hacer:
+     * Abre el juego
+     * Durante el gameplay, presiona TAB
+     * Toma una captura del menú mostrando las recetas
+   - Importante: El menú debe estar visible, mostrando todas las combinaciones
+   - Nombre sugerido: screenshot_menu_recetas.png
+
+2. CAPTURA DEL HINT "TAB PARA VER RECETAS" (Cuando el menú está cerrado)
+   - Ubicación en documento: Sección 5 "Menú de Recetas"
+   - Qué hacer:
+     * Abre el juego
+     * NO presiones TAB (menú cerrado)
+     * Toma una captura mostrando el hint en la esquina superior derecha
+   - Importante: Debe verse claramente "TAB PARA VER RECETAS" con TAB como tecla
+   - Nombre sugerido: screenshot_hint_recetas.png
+
+3. CAPTURA DEL PANEL DE ESTADÍSTICAS AL PERDER
+   - Ubicación en documento: Sección 6 "Sistema de Estadísticas"
+   - Qué hacer:
+     * Abre el juego
+     * Juega hasta perder
+     * Toma una captura del panel "HAS MUERTO" mostrando todas las estadísticas
+   - Importante: Deben verse claramente:
+     * Daño realizado: (número)
+     * Daño recibido: (número)
+     * Daño curado: (número)
+     * Zombies matados: (número)
+     * Tiempo: (formato MM:SS)
+   - Nombre sugerido: screenshot_estadisticas_muerte.png
+
+4. CAPTURA DEL PANEL DE ESTADÍSTICAS AL GANAR
+   - Ubicación en documento: Sección 6 "Sistema de Estadísticas"
+   - Qué hacer:
+     * Abre el juego
+     * Juega hasta ganar (completa el nivel)
+     * Toma una captura del panel "VICTORIA" mostrando todas las estadísticas
+   - Importante: Deben verse las mismas estadísticas que en la captura de muerte
+   - Nombre sugerido: screenshot_estadisticas_victoria.png
+
+5. CAPTURA DEL HUD MOSTRANDO INVENTARIO
+   - Ubicación en documento: Sección 3 "Sistema de Inventario"
+   - Qué hacer:
+     * Abre el juego
+     * Recoge varias balas diferentes
+     * Toma una captura mostrando el HUD con el inventario visible
+   - Importante: Debe verse claramente la cantidad de cada tipo de bala
+   - Nombre sugerido: screenshot_inventario_hud.png
+
+6. CAPTURA DEL CÓDIGO EN UNITY EDITOR (Optional pero recomendado)
+   - Ubicación en documento: Secciones 3, 4, 6
+   - Qué hacer:
+     * Abre Visual Studio o el editor de código
+     * Muestra GameStats.cs, BulletInventory.cs, etc.
+     * Toma capturas mostrando los scripts principales
+   - Importante: Que se vea el código claramente
+   - Nombre sugerido: screenshot_code_gamestats.png, etc.
+
+INSTRUCCIONES PARA INTEGRAR LAS IMÁGENES:
+
+1. Guarda todas las imágenes en una carpeta llamada "Screenshots" en el proyecto
+2. Abre el archivo DOCUMENTACION_RECUPERACION.html con un editor de texto
+3. Busca las líneas que dicen "<!-- [ESPACIO PARA IMAGEN: ... ] -->"
+4. Reemplaza esas líneas con etiquetas img:
+   <img src="Screenshots/screenshot_menu_recetas.png" alt="Menú de Recetas" style="max-width: 100%; margin: 20px 0; border: 1px solid #ccc; border-radius: 5px;">
+
+5. Guarda el archivo HTML
+6. Abre el HTML en el navegador para verificar que las imágenes se ven correctamente
+
+ALTERNATIVA: CREAR DOCUMENTO WORD O PDF
+
+Si prefieres crear un documento Word en lugar de HTML:
+1. Copia todo el contenido del HTML
+2. Pégalo en Word
+3. Inserta las imágenes en los lugares indicados
+4. Formatea según necesites
+5. Exporta como PDF
+
+CHECKLIST DE CAPTURAS:
+
+☐ Menu de recetas (TAB abierto)
+☐ Hint de recetas (TAB cerrado)
+☐ Estadísticas al perder
+☐ Estadísticas al ganar
+☐ HUD con inventario
+☐ Código GameStats.cs (opcional)
+☐ Código BulletInventory.cs (opcional)
+
+Total mínimo recomendado: 5 capturas
+Total ideal con código: 7 capturas
+
+IMPORTANTE: Las imágenes deben ser claras, legibles y demostrar que el sistema funciona correctamente.

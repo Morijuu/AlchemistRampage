@@ -33,6 +33,7 @@ public class PlayerScript : MonoBehaviour
     private BulletInventory inventory;
     private float lastShootTime = float.NegativeInfinity;
 
+    private int heldSlot = -1;
 
     private GameObject    weaponObject;
     private WeaponAnimator weaponAnim;
@@ -148,6 +149,7 @@ public class PlayerScript : MonoBehaviour
 
         Animations();
         UpdateBodyAnimation();
+        HandleSlotInput();
         Debug.DrawRay(bulletSpawn.position, directionMouse.normalized * raycastMaxDistance, Color.green);
 
         if (weaponObject != null)
@@ -209,6 +211,9 @@ void Shoot()
 
     BulletData data =
         inventory.ActiveData;
+
+    if (data == null)
+        return;
 
     if (
         data.bulletType ==
@@ -330,5 +335,34 @@ private void UpdateBodyAnimation()
         baseBodyScale.x * bodyScaleX,
         baseBodyScale.y * bodyScaleY,
         baseBodyScale.z);
+}
+
+private void HandleSlotInput()
+{
+    for (int i = 0; i < 3; i++)
+    {
+        KeyCode key = KeyCode.Alpha1 + i;
+
+        if (UnityEngine.Input.GetKeyDown(key))
+        {
+            if (heldSlot == -1)
+            {
+                heldSlot = i;
+                inventory.SelectSlot(i);
+                AudioManager.Instance?.PlayPickupBullet();
+            }
+            else if (heldSlot != i)
+            {
+                inventory.MixSlots(heldSlot, i);
+                AudioManager.Instance?.PlayMergeBullet();
+                heldSlot = -1;
+            }
+        }
+
+        if (UnityEngine.Input.GetKeyUp(key) && heldSlot == i)
+        {
+            heldSlot = -1;
+        }
+    }
 }
 }
