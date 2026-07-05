@@ -8,13 +8,9 @@ public class BulletInventory : MonoBehaviour
     [SerializeField] private BulletData[] allBulletData;
     public GameObject bulletPrefab;
 
-    // 3 slots para el sistema visual
     [SerializeField] private BulletData[] slotData = new BulletData[3];
     [SerializeField] private int[] slotCounts = new int[3];
     [SerializeField] private int activeSlot = 0;
-
-    // Array para almacenar cantidad de balas por tipo (8 tipos)
-    private int[] bulletCounts = new int[8];
 
     public BulletData ActiveData
     {
@@ -48,17 +44,13 @@ public class BulletInventory : MonoBehaviour
     // Obtener datos de una bala por tipo
     public BulletData GetDataForType(BulletType type)
     {
+        if (allBulletData == null) return null;
+
         foreach (BulletData data in allBulletData)
         {
-            if (data.bulletType == type) return data;
+            if (data != null && data.bulletType == type) return data;
         }
         return null;
-    }
-
-    // Agregar una bala al inventario
-    public void AddBullet(BulletType type, int amount = 1)
-    {
-        bulletCounts[(int)type] += amount;
     }
 
     // Consumir una bala
