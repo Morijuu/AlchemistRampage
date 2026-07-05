@@ -6,17 +6,37 @@ public class BulletInventory : MonoBehaviour
     public static BulletInventory Instance { get; private set; }
 
     [SerializeField] private BulletData[] allBulletData;
-    [SerializeField] public GameObject bulletPrefab;
+    public GameObject bulletPrefab;
 
+    // 3 slots para el sistema visual
     [SerializeField] private BulletData[] slotData = new BulletData[3];
     [SerializeField] private int[] slotCounts = new int[3];
-    [SerializeField] private bool[] isMixedSlot = new bool[3];
     [SerializeField] private int activeSlot = 0;
 
-    public BulletData ActiveData => slotData[activeSlot];
-    public int ShotCount => slotCounts[activeSlot];
-    public int ActiveSlot => activeSlot;
+    // Array para almacenar cantidad de balas por tipo (8 tipos)
+    private int[] bulletCounts = new int[8];
 
+    public BulletData ActiveData
+    {
+        get
+        {
+            if (activeSlot >= 0 && activeSlot < slotData.Length)
+                return slotData[activeSlot];
+            return null;
+        }
+    }
+
+    public int ShotCount
+    {
+        get
+        {
+            if (activeSlot >= 0 && activeSlot < slotCounts.Length)
+                return slotCounts[activeSlot];
+            return 0;
+        }
+    }
+
+    public int ActiveSlot => activeSlot;
     public BulletData[] SlotData => slotData;
     public int[] SlotCounts => slotCounts;
 
@@ -25,6 +45,7 @@ public class BulletInventory : MonoBehaviour
         Instance = this;
     }
 
+    // Obtener datos de una bala por tipo
     public BulletData GetDataForType(BulletType type)
     {
         foreach (BulletData data in allBulletData)
@@ -34,15 +55,39 @@ public class BulletInventory : MonoBehaviour
         return null;
     }
 
+    // Agregar una bala al inventario
+    public void AddBullet(BulletType type, int amount = 1)
+    {
+        bulletCounts[(int)type] += amount;
+    }
+
+    // Consumir una bala
+    public bool TryConsumeBullet()
+    {
+        if (slotData[activeSlot] == null || slotCounts[activeSlot] <= 0)
+            return false;
+
+        slotCounts[activeSlot]--;
+
+        if (slotCounts[activeSlot] <= 0)
+        {
+            slotData[activeSlot] = null;
+        }
+
+        return true;
+    }
+
+    // Establecer una bala en el slot activo
     public void SetBullet(BulletType type)
     {
         BulletData data = GetDataForType(type);
         if (data == null) return;
 
+        // Buscar si ya hay balas de este tipo
         int sameTypeSlot = -1;
         for (int i = 0; i < 3; i++)
         {
-            if (slotData[i] != null && slotData[i].bulletType == type && !isMixedSlot[i])
+            if (slotData[i] != null && slotData[i].bulletType == type)
             {
                 sameTypeSlot = i;
                 break;
@@ -55,22 +100,32 @@ public class BulletInventory : MonoBehaviour
         }
         else
         {
-            int emptySlot = System.Array.IndexOf(slotData, null);
+            // Buscar slot vacío
+            int emptySlot = -1;
+            for (int i = 0; i < 3; i++)
+            {
+                if (slotData[i] == null)
+                {
+                    emptySlot = i;
+                    break;
+                }
+            }
+
             if (emptySlot != -1)
             {
                 slotData[emptySlot] = data;
                 slotCounts[emptySlot] = data.shotsPerPickup;
-                isMixedSlot[emptySlot] = false;
             }
             else
             {
+                // Reemplazar slot activo si no hay vacíos
                 slotData[activeSlot] = data;
                 slotCounts[activeSlot] = data.shotsPerPickup;
-                isMixedSlot[activeSlot] = false;
             }
         }
     }
 
+    // Mezclar balas
     public void FuseBullet(BulletType fusedType, BulletType incomingType)
     {
         BulletData fusedData = GetDataForType(fusedType);
@@ -80,9 +135,9 @@ public class BulletInventory : MonoBehaviour
 
         slotCounts[activeSlot] += incomingData.shotsPerPickup;
         slotData[activeSlot] = fusedData;
-        isMixedSlot[activeSlot] = true;
     }
 
+    // Seleccionar slot
     public void SelectSlot(int slotIndex)
     {
         if (slotIndex >= 0 && slotIndex < 3 && slotData[slotIndex] != null && slotCounts[slotIndex] > 0)
@@ -91,6 +146,7 @@ public class BulletInventory : MonoBehaviour
         }
     }
 
+    // Mezclar dos slots
     public void MixSlots(int slotA, int slotB)
     {
         if (slotData[slotA] == null || slotData[slotB] == null) return;
@@ -104,58 +160,37 @@ public class BulletInventory : MonoBehaviour
         int totalAmmo = slotCounts[slotA] + slotCounts[slotB];
         slotData[slotA] = resultData;
         slotCounts[slotA] = totalAmmo;
-        isMixedSlot[slotA] = true;
         slotData[slotB] = null;
         slotCounts[slotB] = 0;
-        isMixedSlot[slotB] = false;
     }
 
-    public bool TryConsumeBullet()
-    {
-        if (slotData[activeSlot] == null || slotData[activeSlot].bulletType == BulletType.None || slotCounts[activeSlot] <= 0)
-            return false;
-        slotCounts[activeSlot]--;
-
-        if (slotCounts[activeSlot] <= 0)
-        {
-            slotData[activeSlot] = null;
-            isMixedSlot[activeSlot] = false;
-        }
-
-        return true;
-    }
-
-    public bool CanFuse(BulletType incoming)
-    {
-        if (ActiveData == null) return false;
-        return GetFusionResult(ActiveData.bulletType, incoming) != BulletType.None;
-    }
-
+    // Tabla de fusión
     public static BulletType GetFusionResult(BulletType a, BulletType b)
     {
         if ((a == BulletType.Regular && b == BulletType.Heavy) ||
-            (a == BulletType.Heavy   && b == BulletType.Regular))
+            (a == BulletType.Heavy && b == BulletType.Regular))
             return BulletType.Area;
 
-        if ((a == BulletType.Heavy  && b == BulletType.Bouncy) ||
+        if ((a == BulletType.Heavy && b == BulletType.Bouncy) ||
             (a == BulletType.Bouncy && b == BulletType.Heavy))
             return BulletType.Frag;
 
         if ((a == BulletType.Regular && b == BulletType.Bouncy) ||
-            (a == BulletType.Bouncy  && b == BulletType.Regular))
+            (a == BulletType.Bouncy && b == BulletType.Regular))
             return BulletType.Target;
 
-        if ((a == BulletType.Area   && b == BulletType.Bouncy) ||
+        if ((a == BulletType.Area && b == BulletType.Bouncy) ||
             (a == BulletType.Bouncy && b == BulletType.Area))
             return BulletType.Chain;
 
         if ((a == BulletType.Target && b == BulletType.Heavy) ||
-            (a == BulletType.Heavy  && b == BulletType.Target))
+            (a == BulletType.Heavy && b == BulletType.Target))
             return BulletType.Piercing;
 
         return BulletType.None;
     }
 
+    // Obtener todas las recetas
     public static List<(BulletType a, BulletType b, BulletType result)> GetAllRecipes()
     {
         return new List<(BulletType, BulletType, BulletType)>
